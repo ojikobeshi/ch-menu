@@ -31,14 +31,17 @@ function displayMenu(body) {
   });
 }
 
-const menuDate = getDate();
+function fetchMenu() {
+  const menuDate = getDate();
+  fetch(apiUrl + menuDate)
+    .then(res => res.json())
+    .then(body => {
+      if (body.result !== 'SUCCESS') {
+        console.error(chalk.red('ERROR:'), body.errorMessage);
+        return;
+      }
+      displayMenu(body);
+    });
+}
 
-fetch(apiUrl + menuDate)
-	.then(res => res.json())
-	.then(body => {
-    if (body.result !== 'SUCCESS') {
-      console.error(chalk.red('ERROR:'), body.errorMessage);
-      return;
-    }
-    displayMenu(body);
-  });
+exports.fetchMenu = fetchMenu;

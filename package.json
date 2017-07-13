@@ -1,9 +1,9 @@
 {
   "name": "crimson-house-menu",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Shows the Crimson House Cafeteria menu",
   "main": "index.js",
-  "cli": "index.js",
+  "bin": "./cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
