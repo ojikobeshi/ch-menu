@@ -42,26 +42,37 @@ Bowl B     : BBQ chicken & curry “Jamaica-style”
 Pasta      : Spaghetti w/ spinach & salmon cream sauce
 ```
 
-### Filters
+### Options
 
 __Floor__
 
-Type: `number`
+Show the menu for a specific floor (9 or 22).
 
-Show the menu by floor.
+Type: `number`
+Options: `9`, `22`
+Alias: `f`
 
 ```bash
-# readable
 $ crimson-house-menu --floor 9
-# alias
-$ crimson-house-menu -f 22
+```
+
+__Meal Time__
+
+Show the menu for lunch, dinner or both. By default menu will be chosen
+by the time of the day, lnch until 3pm and dinner any time after that.
+
+Type: `String`
+Options: `lunch`, `dinner`
+Alias: `t`
+
+```bash
+$ crimson-house-menu --time lunch
 ```
 
 ## TODO
 
 * add filter options for
   * nutrition
-  * floor
   * meal time
 * add display option compact / full
 * option to display images

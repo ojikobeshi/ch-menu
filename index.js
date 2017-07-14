@@ -6,17 +6,20 @@ const pad = require('pad');
 const apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/cafeteria/menulist?menuDate=';
 
 const optionDefinitions = [
-  { name: 'floor', alias: 'f', type: Number }
+  { name: 'floor', alias: 'f', type: Number },
+  { name: 'time', alias: 't', type: String }
 ];
 
 const options = commandLineArgs(optionDefinitions);
 
-function getDate() {
+function getDate(formatted = false) {
   const now = new Date();
   const year = now.getFullYear();
   const month = pad(2, now.getMonth() + 1, '0');
   const day = pad(2, now.getDay() + 1, '0');
-  return `${year}${month}${day}`;
+  return formatted ?
+    `${year}\\${month}\\${day}` :
+    `${year}${month}${day}`;
 }
 
 function filterItems(items, mealTime) {
@@ -32,12 +35,18 @@ function filterItems(items, mealTime) {
 }
 
 function displayMenu(body) {
-  const mealTime = new Date().getHours() < 15 ? 1 : 2;
+  let mealTime = new Date().getHours() < 15 ? 1 : 2;
+
+  if (options.time !== null && ['dinner', 'lunch'].includes(options.time)) {
+    mealTime = options.time === 'lunch' ? 1 : 2;
+  }
+
   const mealTimeTitle = mealTime === 1 ? 'Lunch' : 'Dinner';
   const items = filterItems(body.data, mealTime);
   let floor = '';
 
-  console.log(chalk.hex('#bf0000').bold.underline(`Rakuten Crimson House ${mealTimeTitle} Menu\n`));
+  const title = `Rakuten Crimson House ${mealTimeTitle} Menu for ${getDate(true)}\n`
+  console.log(chalk.hex('#bf0000').bold.underline(title));
 
   items.forEach((item) => {
     if (floor !== item.cafeteriaId) {
