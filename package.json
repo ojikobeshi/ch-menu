@@ -1,6 +1,6 @@
 {
   "name": "crimson-house-menu",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Shows the Crimson House Cafeteria menu",
   "main": "index.js",
   "bin": "./cli.js",
@@ -16,11 +16,12 @@
   "author": "Johannes Fischer",
   "license": "ISC",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/JohannesFischer/crimson-house-menu.git"
+    "type": "git",
+    "url": "https://github.com/JohannesFischer/crimson-house-menu.git"
   },
   "dependencies": {
     "chalk": "^2.0.1",
+    "command-line-args": "^4.0.6",
     "node-fetch": "^1.7.1",
     "pad": "^1.1.0"
   }
