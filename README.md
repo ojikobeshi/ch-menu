@@ -44,6 +44,18 @@ Pasta      : Spaghetti w/ spinach & salmon cream sauce
 
 ### Options
 
+__date__
+
+Show the menu for a specific date.
+
+Type: `string`
+Options: Date in the format `YYYYMMDD`
+Alias: `d`
+
+```bash
+$ crimson-house-menu --date 20170209
+```
+
 __Floor__
 
 Show the menu for a specific floor (9 or 22).

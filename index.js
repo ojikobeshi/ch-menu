@@ -6,6 +6,7 @@ const pad = require('pad');
 const apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/cafeteria/menulist?menuDate=';
 
 const optionDefinitions = [
+  { name: 'date', alias: 'd', type: String },
   { name: 'floor', alias: 'f', type: Number },
   { name: 'time', alias: 't', type: String }
 ];
@@ -16,7 +17,8 @@ function getDate(formatted = false) {
   const now = new Date();
   const year = now.getFullYear();
   const month = pad(2, now.getMonth() + 1, '0');
-  const day = pad(2, now.getDay() + 1, '0');
+  const day = pad(2, now.getDate(), '0');
+
   return formatted ?
     `${year}\\${month}\\${day}` :
     `${year}${month}${day}`;
@@ -55,15 +57,19 @@ function displayMenu(body) {
       }
 
       floor = item.cafeteriaId;
-      console.log(chalk.bold.underline(floor));
+      console.log(chalk.bold.underline(floor) + '\n');
     }
 
-    console.log(`${pad(item.menuType, 11)}: ${item.title}`);
+    const menuType = chalk.hex('#ccc')(pad(item.menuType, 12))
+    console.log(`${menuType} ${item.title}`);
   });
 }
 
 function fetchMenu() {
-  const menuDate = getDate();
+  const menuDate = options.date !== null ?
+    options.date :
+    getDate();
+
   fetch(apiUrl + menuDate)
     .then(res => res.json())
     .then(body => {
