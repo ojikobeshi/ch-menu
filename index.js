@@ -13,15 +13,27 @@ const optionDefinitions = [
 
 const options = commandLineArgs(optionDefinitions);
 
-function getDate(formatted = false) {
+function formatDate(date) {
+  return `${date.substr(0, 4)}\\${date.substr(4, 2)}\\${date.substr(6, 2)}`;
+}
+
+function makeDate() {
   const now = new Date();
   const year = now.getFullYear();
   const month = pad(2, now.getMonth() + 1, '0');
   const day = pad(2, now.getDate(), '0');
 
+  return `${year}${month}${day}`;
+}
+
+function getDate(formatted = false) {
+  const date = typeof options.date !== 'undefined' ?
+    options.date :
+    makeDate();
+
   return formatted ?
-    `${year}\\${month}\\${day}` :
-    `${year}${month}${day}`;
+    formatDate(date) :
+    date;
 }
 
 function filterItems(items, mealTime) {
@@ -29,7 +41,7 @@ function filterItems(items, mealTime) {
   items = items.filter((item) => item.mealTime === mealTime);
 
   // floor
-  if (options.floor !== null && [9, 22].includes(options.floor)) {
+  if (typeof options.floor !== 'undefined' && [9, 22].includes(options.floor)) {
     items = items.filter((item) => item.cafeteriaId === `${options.floor}F`);
   }
 
@@ -39,7 +51,7 @@ function filterItems(items, mealTime) {
 function displayMenu(body) {
   let mealTime = new Date().getHours() < 15 ? 1 : 2;
 
-  if (options.time !== null && ['dinner', 'lunch'].includes(options.time)) {
+  if (typeof options.time !== 'undefined' && ['dinner', 'lunch'].includes(options.time)) {
     mealTime = options.time === 'lunch' ? 1 : 2;
   }
 
@@ -49,6 +61,10 @@ function displayMenu(body) {
 
   const title = `Rakuten Crimson House ${mealTimeTitle} Menu for ${getDate(true)}\n`
   console.log(chalk.hex('#bf0000').bold.underline(title));
+
+  if (items.length === 0) {
+    return console.log('No menu found!');
+  }
 
   items.forEach((item) => {
     if (floor !== item.cafeteriaId) {
@@ -66,16 +82,14 @@ function displayMenu(body) {
 }
 
 function fetchMenu() {
-  const menuDate = options.date !== null ?
-    options.date :
-    getDate();
+  const menuDate = getDate();
 
   fetch(apiUrl + menuDate)
     .then(res => res.json())
     .then(body => {
       if (body.result !== 'SUCCESS') {
-        console.error(chalk.red('ERROR:'), body.errorMessage);
-        return;
+        console.log(body);
+        return console.error(chalk.red('ERROR:'), body.errorMessage);
       }
 
       displayMenu(body);
