@@ -8,6 +8,7 @@ const apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/
 const optionDefinitions = [
   { name: 'date', alias: 'd', type: String },
   { name: 'floor', alias: 'f', type: Number },
+  { name: 'show-images', type: Boolean },
   { name: 'time', alias: 't', type: String }
 ];
 
@@ -57,28 +58,44 @@ function displayMenu(body) {
 
   const mealTimeTitle = mealTime === 1 ? 'Lunch' : 'Dinner';
   const items = filterItems(body.data, mealTime);
-  let floor = '';
 
-  const title = `Rakuten Crimson House ${mealTimeTitle} Menu for ${getDate(true)}\n`
+  const title = `Rakuten Crimson House ${mealTimeTitle} Menu for ${getDate(true)}`;
   console.log(chalk.hex('#bf0000').bold.underline(title));
 
   if (items.length === 0) {
     return console.log('No menu found!');
   }
 
+  if (options['show-images'] === true) {
+    console.log('fetching images');
+
+    if (!process.env.TERM.includes('iterm')) {
+      console.log('Sorry your terminal doesn\'t support image output');
+    }
+  }
+
+  print(items);
+}
+
+function print(items) {
+  let floor = '';
+  let output = '';
+
   items.forEach((item) => {
     if (floor !== item.cafeteriaId) {
-      if (floor !== '') {
-        console.log('');
-      }
-
       floor = item.cafeteriaId;
-      console.log(chalk.bold.underline(floor) + '\n');
+      output += `\n${chalk.bold.underline(floor)}\n`;
     }
 
-    const menuType = chalk.hex('#ccc')(pad(item.menuType, 12))
-    console.log(`${menuType} ${item.title}`);
+    const menuType = chalk.hex('#ccc')(pad(item.menuType, 12));
+    const price = item.price > 0 ?
+      chalk.bold(` (¥${item.price})`) :
+      '';
+
+    output += `${menuType} ${item.title}${price}\n`;
   });
+
+  console.log(output);
 }
 
 function fetchMenu() {

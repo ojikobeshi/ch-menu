@@ -22,6 +22,7 @@
   "dependencies": {
     "chalk": "^2.0.1",
     "command-line-args": "^4.0.6",
+    "imgcat": "^2.3.0",
     "node-fetch": "^1.7.1",
     "pad": "^1.1.0"
   }

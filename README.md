@@ -42,6 +42,12 @@ Bowl B     : BBQ chicken & curry “Jamaica-style”
 Pasta      : Spaghetti w/ spinach & salmon cream sauce
 ```
 
+## Run without installing permanently
+
+```bash
+npx crimson-house-menu
+```
+
 ### Options
 
 __date__
