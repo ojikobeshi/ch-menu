@@ -1,9 +1,10 @@
 const fetch = require('node-fetch');
 const chalk = require('chalk');
 const commandLineArgs = require('command-line-args');
-// const imgcat = require('imgcat');
+const imgcat = require('imgcat');
 const pad = require('pad');
 const apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/cafeteria/menulist?menuDate=';
+const imageSize = '300px';
 
 const optionDefinitions = [
   { name: 'date', alias: 'd', type: String },
@@ -67,24 +68,41 @@ function displayMenu(body) {
   }
 
   if (options['show-images'] === true) {
-    console.log('fetching images');
-
-    if (!process.env.TERM.includes('iterm')) {
+    if (process.env.TERM_PROGRAM !== 'iTerm.app') {
       console.log('Sorry your terminal doesn\'t support image output');
+      print(items);
     }
-  }
 
-  print(items);
+    console.log('Fetching images');
+    const images = {};
+
+    items.forEach((item) => {
+      imgcat(item.imageURL, { width: imageSize })
+        .then(image => {
+          images[item.menuId] = image;
+          console.log(`${Object.keys(images).length}/${items.length}`);
+
+          if (Object.keys(images).length === items.length) {
+            print(items, images);
+          }
+        })
+        .catch(e => {
+          console.log(e.name)
+        });
+    });
+  }
 }
 
-function print(items) {
+function print(items, images) {
   let floor = '';
-  let output = '';
+  const showImages = options['show-images'];
 
   items.forEach((item) => {
+    let output = '';
+
     if (floor !== item.cafeteriaId) {
       floor = item.cafeteriaId;
-      output += `\n${chalk.bold.underline(floor)}\n`;
+      output += `\n${chalk.bold.underline(floor)}`;
     }
 
     const menuType = chalk.hex('#ccc')(pad(item.menuType, 12));
@@ -93,9 +111,13 @@ function print(items) {
       '';
 
     output += `${menuType} ${item.title}${price}\n`;
-  });
 
-  console.log(output);
+    if (showImages && typeof images[item.menuId] !== 'undefined') {
+      output += images[item.menuId];
+    }
+
+    console.log(output);
+  });
 }
 
 function fetchMenu() {
