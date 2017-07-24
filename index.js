@@ -90,6 +90,8 @@ function displayMenu(body) {
           console.log(e.name)
         });
     });
+  } else {
+    print(items);
   }
 }
 
@@ -102,7 +104,7 @@ function print(items, images) {
 
     if (floor !== item.cafeteriaId) {
       floor = item.cafeteriaId;
-      output += `\n${chalk.bold.underline(floor)}`;
+      output += `${chalk.bold.underline(floor)}\n`;
     }
 
     const menuType = chalk.hex('#ccc')(pad(item.menuType, 12));
