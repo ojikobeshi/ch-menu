@@ -115,10 +115,10 @@ function displayMenu(body) {
       imgcat(item.imageURL, { width: imageSize })
         .then((image) => {
           images[item.menuId] = image;
-          bar.tick(Object.keys(images).length);
+          bar.tick(1);
 
           if (Object.keys(images).length === items.length) {
-            console.log('\ncomplete\n');
+            console.log(`\n${chalk.hex('#6ec14c')('✔')} complete\n`);
             print(items, images);
           }
         })
