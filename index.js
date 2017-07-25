@@ -3,6 +3,8 @@ const chalk = require('chalk');
 const commandLineArgs = require('command-line-args');
 const imgcat = require('imgcat');
 const pad = require('pad');
+const ProgressBar = require('progress');
+
 const apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/cafeteria/menulist?menuDate=';
 const imageSize = '300px';
 
@@ -10,7 +12,7 @@ const optionDefinitions = [
   { name: 'date', alias: 'd', type: String },
   { name: 'floor', alias: 'f', type: Number },
   { name: 'show-images', type: Boolean },
-  { name: 'time', alias: 't', type: String }
+  { name: 'time', alias: 't', type: String },
 ];
 
 const options = commandLineArgs(optionDefinitions);
@@ -39,15 +41,43 @@ function getDate(formatted = false) {
 }
 
 function filterItems(items, mealTime) {
+  let filteredItems = [];
   // meal time
-  items = items.filter((item) => item.mealTime === mealTime);
+  filteredItems = items.filter(item => item.mealTime === mealTime);
 
   // floor
   if (typeof options.floor !== 'undefined' && [9, 22].includes(options.floor)) {
-    items = items.filter((item) => item.cafeteriaId === `${options.floor}F`);
+    filteredItems = filteredItems.filter(item => item.cafeteriaId === `${options.floor}F`);
   }
 
-  return items;
+  return filteredItems;
+}
+
+function print(items, images) {
+  let floor = '';
+  const showImages = options['show-images'];
+
+  items.forEach((item) => {
+    let output = '';
+
+    if (floor !== item.cafeteriaId) {
+      floor = item.cafeteriaId;
+      output += `${chalk.bold.underline(floor)}\n`;
+    }
+
+    const menuType = chalk.hex('#ccc')(pad(item.menuType, 12));
+    const price = item.price > 0 ?
+      chalk.bold(` (¥${item.price})`) :
+      '';
+
+    output += `${menuType} ${item.title}${price}`;
+
+    if (showImages && typeof images[item.menuId] !== 'undefined') {
+      output += `\n${images[item.menuId]}`;
+    }
+
+    console.log(output);
+  });
 }
 
 function displayMenu(body) {
@@ -73,51 +103,35 @@ function displayMenu(body) {
       print(items);
     }
 
-    console.log('Fetching images');
     const images = {};
+    const bar = new ProgressBar('Fetching Images [:bar] :percent', {
+      complete: '=',
+      incomplete: ' ',
+      width: 20,
+      total: items.length,
+    });
 
     items.forEach((item) => {
       imgcat(item.imageURL, { width: imageSize })
-        .then(image => {
+        .then((image) => {
           images[item.menuId] = image;
-          console.log(`${Object.keys(images).length}/${items.length}`);
+          bar.tick(Object.keys(images).length);
+
+          if (bar.complete) {
+            console.log('\ncomplete\n');
+          }
 
           if (Object.keys(images).length === items.length) {
             print(items, images);
           }
         })
-        .catch(e => {
-          console.log(e.name)
+        .catch((e) => {
+          console.log(e.name);
         });
     });
+  } else {
+    print(items);
   }
-}
-
-function print(items, images) {
-  let floor = '';
-  const showImages = options['show-images'];
-
-  items.forEach((item) => {
-    let output = '';
-
-    if (floor !== item.cafeteriaId) {
-      floor = item.cafeteriaId;
-      output += `\n${chalk.bold.underline(floor)}`;
-    }
-
-    const menuType = chalk.hex('#ccc')(pad(item.menuType, 12));
-    const price = item.price > 0 ?
-      chalk.bold(` (¥${item.price})`) :
-      '';
-
-    output += `${menuType} ${item.title}${price}\n`;
-
-    if (showImages && typeof images[item.menuId] !== 'undefined') {
-      output += images[item.menuId];
-    }
-
-    console.log(output);
-  });
 }
 
 function fetchMenu() {
@@ -125,13 +139,12 @@ function fetchMenu() {
 
   fetch(apiUrl + menuDate)
     .then(res => res.json())
-    .then(body => {
+    .then((body) => {
       if (body.result !== 'SUCCESS') {
-        console.log(body);
         return console.error(chalk.red('ERROR:'), body.errorMessage);
       }
 
-      displayMenu(body);
+      return displayMenu(body);
     });
 }
 
