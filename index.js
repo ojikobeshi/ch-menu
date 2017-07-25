@@ -117,11 +117,8 @@ function displayMenu(body) {
           images[item.menuId] = image;
           bar.tick(Object.keys(images).length);
 
-          if (bar.complete) {
-            console.log('\ncomplete\n');
-          }
-
           if (Object.keys(images).length === items.length) {
+            console.log('\ncomplete\n');
             print(items, images);
           }
         })
