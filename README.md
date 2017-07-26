@@ -87,10 +87,18 @@ Alias: `t`
 $ crimson-house-menu --time lunch
 ```
 
+__Show Images__
+
+Display images of menu items, requires iterm to work.
+
+Type: `Boolean`
+
+```bash
+$ crimson-house-menu --show-images
+```
+
 ## TODO
 
 * add filter options for
   * nutrition
-  * meal time
 * add display option compact / full
-* option to display images
