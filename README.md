@@ -16,7 +16,6 @@ Simply run: `crimson-house-menu`
 $ crimson-house-menu
 
 Rakuten Crimson House Lunch Menu
-
 9F
 Main A     : Deep-fried chicken
 Main B     : Salt-grilled salmon
@@ -28,7 +27,6 @@ Pasta      : Spaghetti with tuna, asparagus & tomato cream sauce
 Udon & Soba: "Abura Udon" (Udon noodles with seasoning oil)
 Ramen      : Shyoyu Ramen Hachioji-style
 Halal      : Cream stew with chicken sausage
-
 22F
 Main A     : Cheese fritters (Aji & white fish) w/ wasabi & yogurt sauce
 Main B     : Simmered chicken w/ ponzu
@@ -50,7 +48,7 @@ npx crimson-house-menu
 
 ### Options
 
-__date__
+__Date__
 
 Show the menu for a specific date.
 

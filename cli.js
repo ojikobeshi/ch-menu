@@ -2,4 +2,4 @@
 
 const lib = require('./index');
 
-lib.fetchMenu();
+lib.CrimsonHouseMenu.fetchMenu();
