@@ -1,4 +1,5 @@
 #!/usr/bin/env node
 
 const lib = require('./index');
-lib.fetchMenu();
+
+lib.CrimsonHouseMenu.fetchMenu();
