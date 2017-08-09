@@ -23,14 +23,16 @@ class CrimsonHouseMenu {
   }
 
   displayMenu(body) {
-    let mealTime = new Date().getHours() < 15 ? 1 : 2;
     const showImages = this.options['show-images'];
+    const LUNCH = 1;
+    const DINNER = 2;
+    let mealTime = new Date().getHours() < 15 ? LUNCH : DINNER;
 
-    if (this.options.time !== null) {
-      mealTime = this.options.time === 'lunch' ? 1 : 2;
+    if (typeof this.options.time !== 'undefined') {
+      mealTime = this.options.time === 'lunch' ? LUNCH : DINNER;
     }
 
-    const mealTimeTitle = mealTime === 1 ? 'Lunch' : 'Dinner';
+    const mealTimeTitle = mealTime === LUNCH ? 'Lunch' : 'Dinner';
     const items = this.filterItems(body.data, mealTime);
 
     const title = `Rakuten Crimson House ${mealTimeTitle} Menu for ${this.getDate(true)}`;
@@ -78,14 +80,24 @@ class CrimsonHouseMenu {
     const menuDate = this.getDate();
 
     fetch(apiUrl + menuDate)
-      .then(res => res.json())
-      .then((body) => {
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        throw new Error('Network response was not ok.');
+      })
+      .then(body => {
         if (body.result !== 'SUCCESS') {
-          return console.error(chalk.red('ERROR:'), body.errorMessage);
+          return console.log(chalk.red('ERROR:'), body.errorMessage);
         }
 
         return this.displayMenu(body);
-      });
+      })
+      .catch(error => {
+        console.log('There has been a problem with your fetch operation: ' + error.message)
+      })
+
   }
 
   filterItems(items, mealTime) {
