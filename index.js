@@ -24,6 +24,7 @@ class CrimsonHouseMenu {
 
   displayMenu(body) {
     let mealTime = new Date().getHours() < 15 ? 1 : 2;
+    const showImages = this.options['show-images'];
 
     if (this.options.time !== null) {
       mealTime = this.options.time === 'lunch' ? 1 : 2;
@@ -39,10 +40,10 @@ class CrimsonHouseMenu {
       return console.log('No menu found!');
     }
 
-    if (this.options['show-images'] === true) {
+    if (showImages === true) {
       if (process.env.TERM_PROGRAM !== 'iTerm.app') {
         console.log('Sorry your terminal doesn\'t support image output');
-        this.print(items);
+        return this.print(items);
       }
 
       const images = {};
@@ -123,9 +124,9 @@ class CrimsonHouseMenu {
     return `${year}${month}${day}`;
   }
 
-  print(items, images) {
+  print(items, images = {}) {
     let floor = '';
-    const showImages = options['show-images'];
+    const showImages = this.options['show-images'];
 
     items.forEach((item) => {
       let output = '';
