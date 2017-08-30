@@ -1,0 +1,11 @@
+Usage: crimson-house-menu [options]
+
+Options:
+  --help         # Print this info
+  -d, --date     # Get menu for a specific date in YYYYMMDD
+  -f, --floor    # Choose menu for floor 9 or 22
+                   Will show items for both floors by default
+  --show-images  # Display images of the menu items (requires iTerm2)
+  -t, --time     # Pick menu time, can be lunch or dinner
+                   Without time option menu time will be picked by user time
+                   (< 15) lunch (>= 15) dinner

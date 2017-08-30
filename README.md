@@ -95,6 +95,14 @@ Type: `Boolean`
 $ crimson-house-menu --show-images
 ```
 
+__Help__
+
+Display a list of options
+
+```bash
+$ crimson-house-menu --help
+```
+
 ## TODO
 
 * add filter options for
