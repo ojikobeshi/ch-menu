@@ -23,8 +23,8 @@
     "chalk": "^2.1.0",
     "command-line-args": "^4.0.7",
     "imgcat": "^2.3.0",
-    "node-fetch": "^1.7.2",
-    "pad": "^1.1.0",
+    "node-fetch": "^1.7.3",
+    "pad": "^1.2.1",
     "progress": "^2.0.0"
   }
 }
