@@ -3,8 +3,12 @@ Usage: crimson-house-menu [options]
 Options:
   --help         # Print this info
   -d, --date     # Get menu for a specific date in YYYYMMDD
+  -e, --exclude  # Exclude menu items with certain properties or ingredients
+                   Can be one or more of:
+                   alcohol, beef, chicken, fish, halal, healthy, mutton, pork
   -f, --floor    # Choose menu for floor 9 or 22
                    Will show items for both floors by default
+  --healthy-only # Show only menu items marked healthy
   --show-images  # Display images of the menu items (requires iTerm2)
   -t, --time     # Pick menu time, can be lunch or dinner
                    Without time option menu time will be picked by user time
