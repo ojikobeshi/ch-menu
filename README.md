@@ -18,6 +18,7 @@ Simply run: `crimson-house-menu`
 $ crimson-house-menu
 
 Rakuten Crimson House Lunch Menu
+
 9F
 Main A     : Deep-fried chicken
 Main B     : Salt-grilled salmon
@@ -29,6 +30,7 @@ Pasta      : Spaghetti with tuna, asparagus & tomato cream sauce
 Udon & Soba: "Abura Udon" (Udon noodles with seasoning oil)
 Ramen      : Shyoyu Ramen Hachioji-style
 Halal      : Cream stew with chicken sausage
+
 22F
 Main A     : Cheese fritters (Aji & white fish) w/ wasabi & yogurt sauce
 Main B     : Simmered chicken w/ ponzu
@@ -87,6 +89,16 @@ Alias: `t`
 $ crimson-house-menu --time lunch
 ```
 
+__Healthy__
+
+Shows only healthy menu items if there are any.
+
+Type: `Boolean`
+
+```bash
+$ crimson-house-menu --healthy-only
+```
+
 __Show Images__
 
 Display images of menu items, requires iterm to work.
@@ -95,6 +107,27 @@ Type: `Boolean`
 
 ```bash
 $ crimson-house-menu --show-images
+```
+
+__Exclude Items__
+
+Hides item from output.
+
+Type: `String`
+Multiple arguments possible.
+
+Available filters:
+* halal
+* alcohol
+* beef
+* chicken
+* fish
+* healthy
+* mutton
+* pork
+
+```bash
+$ crimson-house-menu --exclude alcohol mutton
 ```
 
 __Help__
