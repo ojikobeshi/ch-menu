@@ -4,7 +4,6 @@ var proxyquire = require('proxyquire');
 var fetchMock = require('fetch-mock');
 var sinon = require('sinon');
 var fetchSandbox = fetchMock.sandbox();
-// var CrimsonHouseMenu = require('../lib/index');
 var CrimsonHouseMenu = proxyquire('../lib/index', {
   'node-fetch': fetchSandbox
 });
@@ -23,30 +22,25 @@ describe('CrimsonHouseMenue', function() {
   describe('excludeItems', function() {});
   describe('filterAndSortItems', function() {});
   describe('formatDate', function() {});
-  describe('isOptionSet', function() {});
   describe('makeDate', function() {});
   describe('print', function() {});
 
   describe('fetchMenu', function() {
     after(function() {
-      fetchMock.restore();
+      fetchSandbox.restore();
     });
 
     describe('successful request', function() {
       it('calls API with date param', function() {
         var date = '20030630';
         var apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/cafeteria/menulist?menuDate=';
-        fetchSandbox.mock('*', { result: 'SUCCESS' });
+        fetchSandbox.mock(apiUrl + date, { result: 'SUCCESS' });
         var instance = instanceWithOptions({ date });
+        var displayMock = sinon.stub(instance, 'displayMenu').callsFake(() => true);
 
-        var displayMock = sinon.stub(instance, 'displayMenu').callsFake(function() {
-          return true;
-        });
-
-        var res = instance.fetchMenu();
+        instance.fetchMenu();
         var lastUrl = fetchSandbox.lastUrl();
         assert.equal(lastUrl.endsWith(`menuDate=${date}`), true);
-        sinon.assert.calledOnce(displayMock);
       });
     });
   });
@@ -86,6 +80,37 @@ describe('CrimsonHouseMenue', function() {
     });
   });
 
+  describe('get mealTime', function() {
+    // TODO: import these values
+    var lunchTime = 1;
+    var dinnerTime = 2;
+
+    describe('with time option', function() {
+      it('returns time set in options', function() {
+        var lunchInstance = instanceWithOptions({ time: 'lunch' });
+        var dinnerInstance = instanceWithOptions({ time: 'dinner' });
+        assert.equal(lunchInstance.mealTime, lunchTime);
+        assert.equal(dinnerInstance.mealTime, dinnerTime);
+      });
+    });
+
+    describe('without time option', function() {
+      var clock;
+
+      after(function() {
+        clock.restore();
+      });
+
+      it('returns time based on current time', function() {
+        clock = sinon.useFakeTimers(new Date(2011, 0, 1, 10, 15).getTime());
+        var instance = instanceWithoutOptions();
+        assert.equal(instance.mealTime, lunchTime);
+        clock = sinon.useFakeTimers(new Date(2011, 0, 1, 15, 15).getTime());
+        assert.equal(instance.mealTime, dinnerTime);
+      });
+    });
+  });
+
   describe('help', function() {
     after(function() {
       sinon.stub.reset();
@@ -93,15 +118,25 @@ describe('CrimsonHouseMenue', function() {
 
     it('should read the help file and print it to console', function() {
       var helpText = "HELP FILE CONTENT";
-      var fsSpy = sinon.stub(fs, 'readFileSync').callsFake(function() {
-        return helpText;
-      });
       var instance = instanceWithOptions();
-
-      // TODO: create log method to handle console logging
+      var fsStub = sinon.stub(fs, 'readFileSync').callsFake(() => helpText);
+      var logStub = sinon.stub(instance, 'log').callsFake(() => true);
 
       instance.help();
-      sinon.assert.calledOnce(fsSpy);
+      sinon.assert.calledOnce(fsStub);
+      assert(logStub.calledWith(helpText));
+    });
+  });
+
+  describe('isOptionSet', function() {
+    it('returns wheter options is set or not', function() {
+      var instance = instanceWithOptions({
+        testOption: true,
+        'another-option': 'some value'
+      });
+      assert.equal(instance.isOptionSet('testOption'), true);
+      assert.equal(instance.isOptionSet('another-option'), true);
+      assert.equal(instance.isOptionSet('unsetOption'), false);
     });
   });
 });
