@@ -1,5 +1,6 @@
 var assert = require('assert');
 var fs = require('fs');
+var path = require('path');
 var proxyquire = require('proxyquire');
 var fetchMock = require('fetch-mock');
 var sinon = require('sinon');
@@ -16,14 +17,64 @@ function instanceWithoutOptions() {
   return new CrimsonHouseMenu({});
 }
 
+function getMockData() {
+  return new Promise((resolve, reject) => {
+    var mockFile = path.join(__dirname, 'response.json');
+    fs.readFile(mockFile, 'utf-8', (err, data) => {
+      if (err) reject(err);
+      resolve(JSON.parse(data).data);
+    });
+  });
+}
+
+function removedProp(items, prop) {
+  return items.filter(item => item.ingredients[prop])[0];
+}
+
 describe('CrimsonHouseMenue', function() {
   // To be implemented
   describe('displayMenu', function() {});
-  describe('excludeItems', function() {});
   describe('filterAndSortItems', function() {});
   describe('formatDate', function() {});
   describe('makeDate', function() {});
   describe('print', function() {});
+
+  describe('excludeItems', function() {
+    var instance = instanceWithoutOptions();
+    // beforeEach(function() {
+    //   return getMockData()
+    //     .then((data) => data)
+    //     .catch(console.error);
+    // });
+
+    describe('ingredient', function() {
+      it('removes items with matching ingredients', function(done) {
+        getMockData()
+          .then(function(mockData) {
+            var itemOne = removedProp(mockData, 'alcohol');
+            var itemTwo = removedProp(mockData, 'beef');
+            var items = instance.excludeItems(mockData, 'alcohol');
+            items = instance.excludeItems(items, 'beef');
+            assert.equal(items.includes(itemOne), false);
+            assert.equal(items.includes(itemTwo), false);
+            done();
+          })
+          .catch(console.error);
+      });
+    });
+
+    describe('menuType', function() {
+      it('excludes type Halal', function() {
+        getMockData()
+          .then(function(mockData) {
+            var halalDish = mockData.filter(item => item.menuType === 'Halal')[0];
+            var items = instance.excludeItems(mockData, 'halal');
+            assert.equal(items.includes(halalDish), false);
+          })
+          .catch(console.error);
+      });
+    });
+  });
 
   describe('fetchMenu', function() {
     after(function() {
