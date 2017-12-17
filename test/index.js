@@ -41,37 +41,27 @@ describe('CrimsonHouseMenue', function() {
 
   describe('excludeItems', function() {
     var instance = instanceWithoutOptions();
-    // beforeEach(function() {
-    //   return getMockData()
-    //     .then((data) => data)
-    //     .catch(console.error);
-    // });
+
+    beforeEach(async function() {
+      this.mockData = await getMockData();
+    });
 
     describe('ingredient', function() {
-      it('removes items with matching ingredients', function(done) {
-        getMockData()
-          .then(function(mockData) {
-            var itemOne = removedProp(mockData, 'alcohol');
-            var itemTwo = removedProp(mockData, 'beef');
-            var items = instance.excludeItems(mockData, 'alcohol');
-            items = instance.excludeItems(items, 'beef');
-            assert.equal(items.includes(itemOne), false);
-            assert.equal(items.includes(itemTwo), false);
-            done();
-          })
-          .catch(console.error);
+      it('removes items with matching ingredients', function() {
+        var itemOne = removedProp(this.mockData, 'alcohol');
+        var itemTwo = removedProp(this.mockData, 'beef');
+        var items = instance.excludeItems(this.mockData, 'alcohol');
+        items = instance.excludeItems(items, 'beef');
+        assert.equal(items.includes(itemOne), false);
+        assert.equal(items.includes(itemTwo), false);
       });
     });
 
     describe('menuType', function() {
       it('excludes type Halal', function() {
-        getMockData()
-          .then(function(mockData) {
-            var halalDish = mockData.filter(item => item.menuType === 'Halal')[0];
-            var items = instance.excludeItems(mockData, 'halal');
-            assert.equal(items.includes(halalDish), false);
-          })
-          .catch(console.error);
+        var halalDish = this.mockData.filter(item => item.menuType === 'Halal')[0];
+        var items = instance.excludeItems(this.mockData, 'halal');
+        assert.equal(items.includes(halalDish), false);
       });
     });
   });
