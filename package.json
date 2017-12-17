@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "bin": "./lib/cli.js",
   "scripts": {
-    "test": "mocha ./test"
+    "test": "nyc -r html -r text mocha ./test"
   },
   "keywords": [
     "rakuten",
@@ -30,6 +30,7 @@
   "devDependencies": {
     "fetch-mock": "^5.13.1",
     "mocha": "^4.0.1",
+    "nyc": "^11.3.0",
     "proxyquire": "^1.8.0",
     "sinon": "^4.1.3"
   }

@@ -35,8 +35,6 @@ describe('CrimsonHouseMenue', function() {
   // To be implemented
   describe('displayMenu', function() {});
   describe('filterAndSortItems', function() {});
-  describe('formatDate', function() {});
-  describe('makeDate', function() {});
   describe('print', function() {});
 
   describe('excludeItems', function() {
@@ -83,6 +81,13 @@ describe('CrimsonHouseMenue', function() {
         var lastUrl = fetchSandbox.lastUrl();
         assert.equal(lastUrl.endsWith(`menuDate=${date}`), true);
       });
+    });
+  });
+
+  describe('formatDate', function() {
+    it('returns the date in the format YYYY\MM\DD', function() {
+      var instance = instanceWithOptions();
+      assert.equal(instance.formatDate('20130912'), '2013\\09\\12');
     });
   });
 
@@ -178,6 +183,21 @@ describe('CrimsonHouseMenue', function() {
       assert.equal(instance.isOptionSet('testOption'), true);
       assert.equal(instance.isOptionSet('another-option'), true);
       assert.equal(instance.isOptionSet('unsetOption'), false);
+    });
+  });
+
+  describe('makeDate', function() {
+    before(function() {
+      this.date = sinon.useFakeTimers(new Date(2017, 0, 1).getTime());
+    });
+
+    after(function() {
+      this.date.restore();
+    });
+
+    it('returns todays date in YYYYMMMDD format', function() {
+      var instance = instanceWithoutOptions();
+      assert.equal(instance.makeDate(), '20170101');
     });
   });
 });
