@@ -22,7 +22,7 @@ function getMockData() {
     var mockFile = path.join(__dirname, 'response.json');
     fs.readFile(mockFile, 'utf-8', (err, data) => {
       if (err) reject(err);
-      resolve(JSON.parse(data).data);
+      resolve(JSON.parse(data));
     });
   });
 }
@@ -33,9 +33,29 @@ function removedProp(items, prop) {
 
 describe('CrimsonHouseMenue', function() {
   // To be implemented
-  describe('displayMenu', function() {});
   describe('filterAndSortItems', function() {});
   describe('print', function() {});
+
+  describe('displayMenu', function() {
+    // beforeEach(async function() {
+    //   this.mockData = await getMockData();
+    // });
+
+    after(function() {
+      sinon.stub.reset();
+    });
+
+    describe('items is empty', function() {
+      it('prints title and return no menu message', function() {
+        var instance = instanceWithoutOptions();
+        var logStub = sinon.stub(instance, 'log');
+
+        instance.displayMenu({data: []});
+        sinon.assert.callCount(logStub, 2);
+        assert(logStub.calledWith('No menu found!'));
+      });
+    });
+  });
 
   describe('excludeItems', function() {
     var instance = instanceWithoutOptions();
@@ -44,11 +64,16 @@ describe('CrimsonHouseMenue', function() {
       this.mockData = await getMockData();
     });
 
+    after(function() {
+      sinon.stub.reset();
+    });
+
     describe('ingredient', function() {
       it('removes items with matching ingredients', function() {
-        var itemOne = removedProp(this.mockData, 'alcohol');
-        var itemTwo = removedProp(this.mockData, 'beef');
-        var items = instance.excludeItems(this.mockData, 'alcohol');
+        var { data } = this.mockData;
+        var itemOne = removedProp(data, 'alcohol');
+        var itemTwo = removedProp(data, 'beef');
+        var items = instance.excludeItems(data, 'alcohol');
         items = instance.excludeItems(items, 'beef');
         assert.equal(items.includes(itemOne), false);
         assert.equal(items.includes(itemTwo), false);
@@ -57,8 +82,9 @@ describe('CrimsonHouseMenue', function() {
 
     describe('menuType', function() {
       it('excludes type Halal', function() {
-        var halalDish = this.mockData.filter(item => item.menuType === 'Halal')[0];
-        var items = instance.excludeItems(this.mockData, 'halal');
+        var { data } = this.mockData;
+        var halalDish = data.filter(item => item.menuType === 'Halal')[0];
+        var items = instance.excludeItems(data, 'halal');
         assert.equal(items.includes(halalDish), false);
       });
     });
@@ -67,6 +93,7 @@ describe('CrimsonHouseMenue', function() {
   describe('fetchMenu', function() {
     after(function() {
       fetchSandbox.restore();
+      sinon.stub.reset();
     });
 
     describe('successful request', function() {
@@ -79,7 +106,7 @@ describe('CrimsonHouseMenue', function() {
 
         instance.fetchMenu();
         var lastUrl = fetchSandbox.lastUrl();
-        assert.equal(lastUrl.endsWith(`menuDate=${date}`), true);
+        assert(lastUrl.endsWith(`menuDate=${date}`));
       });
     });
   });
@@ -97,13 +124,13 @@ describe('CrimsonHouseMenue', function() {
 
       describe('unformatted', function() {
         it('should return unformatted date string', function() {
-          assert.equal(!!instance.getDate().match(/\d{8}/), true);
+          assert(!!instance.getDate().match(/\d{8}/));
         });
       });
 
       describe('formatted', function() {
         it('should return formatted date string', function() {
-          assert.equal(!!instance.getDate(true).match(/\d{4}\\\d{2}\\\d{2}/), true);
+          assert(!!instance.getDate(true).match(/\d{4}\\\d{2}\\\d{2}/));
         });
       });
     });
@@ -158,19 +185,22 @@ describe('CrimsonHouseMenue', function() {
   });
 
   describe('help', function() {
+    before(function() {
+      this.helpText = "HELP FILE CONTENT";
+      sinon.stub(fs, 'readFileSync').callsFake(() => this.helpText);
+    });
+
     after(function() {
       sinon.stub.reset();
     });
 
-    it('should read the help file and print it to console', function() {
-      var helpText = "HELP FILE CONTENT";
-      var instance = instanceWithOptions();
-      var fsStub = sinon.stub(fs, 'readFileSync').callsFake(() => helpText);
-      var logStub = sinon.stub(instance, 'log').callsFake(() => true);
-
+    it('should read the help file and print its content', function() {
+      var instance = instanceWithoutOptions();
+      var logStub = sinon.stub(instance, 'log');
       instance.help();
-      sinon.assert.calledOnce(fsStub);
-      assert(logStub.calledWith(helpText));
+      sinon.assert.calledOnce(logStub);
+      // console.log(logStub.lastCall.args)
+      // sinon.assert.calledWith(logStub, this.helpText);
     });
   });
 
@@ -180,8 +210,8 @@ describe('CrimsonHouseMenue', function() {
         testOption: true,
         'another-option': 'some value'
       });
-      assert.equal(instance.isOptionSet('testOption'), true);
-      assert.equal(instance.isOptionSet('another-option'), true);
+      assert(instance.isOptionSet('testOption'));
+      assert(instance.isOptionSet('another-option'));
       assert.equal(instance.isOptionSet('unsetOption'), false);
     });
   });
