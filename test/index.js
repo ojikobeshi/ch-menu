@@ -113,7 +113,15 @@ describe('CrimsonHouseMenue', function() {
         var { data } = this.mockData;
         var halalDish = data.filter(item => item.menuType === 'Halal')[0];
         var items = this.instance.excludeItems(data, 'halal');
-        assert.equal(items.includes(halalDish), false);
+        assert(items.includes(halalDish) === false);
+      });
+    });
+
+    describe('invaid option', function() {
+      it('returns initial items', function() {
+        var { data } = this.mockData;
+        var items = this.instance.excludeItems(data, 'bleep');
+        assert.equal(items, data);
       });
     });
   });
@@ -149,7 +157,7 @@ describe('CrimsonHouseMenue', function() {
     it('returns empty array when length of items is zero', function() {
       var instance = instanceWithoutOptions();
       var items = instance.filterAndSortItems([]);
-      assert(items.length === 0);
+      assert.equal(items.length, 0);
     });
 
     describe('filters', function() {
@@ -162,9 +170,9 @@ describe('CrimsonHouseMenue', function() {
         var instance = instanceWithOptions({ floor });
         var items = instance.filterAndSortItems(this.mockData.data);
         var keys = Object.keys(items);
-        assert(keys.length === 1);
-        assert(keys[0] === `${floor}F`);
-        assert(items[keys[0]][0].cafeteriaId === `${floor}F`);
+        assert.equal(keys.length, 1);
+        assert.equal(keys[0], `${floor}F`);
+        assert.equal(items[keys[0]][0].cafeteriaId, `${floor}F`);
       });
 
       it('filters by mealtime', function() {
@@ -173,7 +181,7 @@ describe('CrimsonHouseMenue', function() {
         var keys = Object.keys(items);
         var allItems = Object.assign(items[keys[0]], items[keys[1]]);
         var allItemsWithMealtime = allItems.filter((el) => el.mealTime === 1);
-        assert(allItems.length === allItemsWithMealtime.length);
+        assert.equal(allItems.length, allItemsWithMealtime.length);
       });
 
       it('fillters healthy only items', function() {
@@ -184,7 +192,7 @@ describe('CrimsonHouseMenue', function() {
         });
         var items = instance.filterAndSortItems(this.mockData.data);
         var keys = Object.keys(items);
-        assert(items[keys[0]][0].title === 'Healthy Item');
+        assert.equal(items[keys[0]][0].title, 'Healthy Item');
       });
     });
 
@@ -235,7 +243,7 @@ describe('CrimsonHouseMenue', function() {
 
       describe('formatted', function() {
         it('should return formatted date string from options', function() {
-          assert.notDeepEqual(instance.getDate(true), '1996\01\01');
+          assert.equal(instance.getDate(true), '1996\\01\\01');
         });
       });
     });
