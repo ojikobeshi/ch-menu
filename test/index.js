@@ -4,6 +4,7 @@ var path = require('path');
 var proxyquire = require('proxyquire');
 var fetchMock = require('fetch-mock');
 var sinon = require('sinon');
+var mockItems = require('./item');
 var fetchSandbox = fetchMock.sandbox();
 var CrimsonHouseMenu = proxyquire('../lib/index', {
   'node-fetch': fetchSandbox
@@ -32,9 +33,6 @@ function removedProp(items, prop) {
 }
 
 describe('CrimsonHouseMenue', function() {
-  // To be implemented
-  describe('print', function() {});
-
   describe('displayMenu', function() {
     before(function() {
       this.emptyData = { data: [] };
@@ -48,7 +46,7 @@ describe('CrimsonHouseMenue', function() {
         var logStub = sinon.stub(instance, 'log');
 
         instance.displayMenu(this.emptyData);
-        sinon.assert.callCount(logStub, 2);
+        sinon.assert.calledTwice(logStub);
         // TODO: move text to config
         assert(logStub.calledWith('No menu found!'));
       });
@@ -77,7 +75,7 @@ describe('CrimsonHouseMenue', function() {
           var printStub = sinon.stub(instance, 'print');
 
           instance.displayMenu(this.emptyData);
-          sinon.assert.callCount(logStub, 2);
+          sinon.assert.calledTwice(logStub);
           assert.equal(instance.options['show-images'], false);
           assert(printStub.calledWith(this.mockItems));
         });
@@ -278,6 +276,7 @@ describe('CrimsonHouseMenue', function() {
     before(function() {
       this.helpText = "HELP FILE CONTENT";
       sinon.stub(fs, 'readFileSync').callsFake(() => this.helpText);
+      sinon.stub.reset();
     });
 
     after(function() {
@@ -286,11 +285,10 @@ describe('CrimsonHouseMenue', function() {
 
     it('should read the help file and print its content', function() {
       var instance = instanceWithoutOptions();
-      var logStub = sinon.stub(instance, 'log');
+      var logStub = sinon.stub(instance, 'log').callsFake(() => false);
       instance.help();
       sinon.assert.calledOnce(logStub);
-      // console.log(logStub.lastCall.args)
-      // sinon.assert.calledWith(logStub, this.helpText);
+      sinon.assert.calledWith(logStub, this.helpText);
     });
   });
 
@@ -318,6 +316,36 @@ describe('CrimsonHouseMenue', function() {
     it('returns todays date in YYYYMMMDD format', function() {
       var instance = instanceWithoutOptions();
       assert.equal(instance.makeDate(), '20170101');
+    });
+  });
+
+  describe('print', function() {
+
+    describe('show images option is active', function() {
+      it('calls log with the formatted item information');
+      it('formated line contains the item image');
+    });
+
+    describe('without show images option', function() {
+      before(function() {
+        this.instance = instanceWithoutOptions();
+        this.logStub = sinon.stub(this.instance, 'log');
+      });
+
+      afterEach(function() {
+        // sinon.stub.reset();
+      })
+
+      it('calls log with the floor headline and item info', function() {
+        var items = { '9F': [mockItems[0]] };
+        this.instance.print(items);
+        sinon.assert.calledTwice(this.logStub);
+        sinon.assert.calledWith(this.logStub, sinon.match('9F'));
+        sinon.assert.calledWith(this.logStub, sinon.match(mockItems[0].title));
+      });
+
+      it('adds item price');
+      it('adds healthy info');
     });
   });
 });
