@@ -33,32 +33,62 @@ function removedProp(items, prop) {
 
 describe('CrimsonHouseMenue', function() {
   // To be implemented
-  describe('filterAndSortItems', function() {});
   describe('print', function() {});
 
   describe('displayMenu', function() {
-    // beforeEach(async function() {
-    //   this.mockData = await getMockData();
-    // });
-
-    after(function() {
-      sinon.stub.reset();
+    before(function() {
+      this.emptyData = { data: [] };
+      this.mockItems = [1, 2, 3];
     });
 
-    describe('items is empty', function() {
-      it('prints title and return no menu message', function() {
+    describe('items array is empty', function() {
+      it('prints title and returns no menu message', function() {
         var instance = instanceWithoutOptions();
+        var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => []);
         var logStub = sinon.stub(instance, 'log');
 
-        instance.displayMenu({data: []});
+        instance.displayMenu(this.emptyData);
         sinon.assert.callCount(logStub, 2);
+        // TODO: move text to config
         assert(logStub.calledWith('No menu found!'));
+      });
+    });
+
+    describe('show images option is false', function() {
+      it('calls print method with items', function() {
+        var instance = instanceWithoutOptions();
+        var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
+        var logStub = sinon.stub(instance, 'log');
+        var printStub = sinon.stub(instance, 'print');
+
+        instance.displayMenu(this.emptyData);
+        sinon.assert.calledOnce(logStub);
+        assert(printStub.calledWith(this.mockItems));
+      });
+    });
+
+    describe('show images option is true', function() {
+      describe('terminal app is not supported', function() {
+        it('logs a notification and prints items', function() {
+          process.env.TERM_PROGRAM = 'some unsupported terminal';
+          var instance = instanceWithOptions({ 'show-images': true });
+          var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
+          var logStub = sinon.stub(instance, 'log');
+          var printStub = sinon.stub(instance, 'print');
+
+          instance.displayMenu(this.emptyData);
+          sinon.assert.callCount(logStub, 2);
+          assert.equal(instance.options['show-images'], false);
+          assert(printStub.calledWith(this.mockItems));
+        });
       });
     });
   });
 
   describe('excludeItems', function() {
-    var instance = instanceWithoutOptions();
+    before(function() {
+      this.instance = instanceWithoutOptions();
+    });
 
     beforeEach(async function() {
       this.mockData = await getMockData();
@@ -73,8 +103,8 @@ describe('CrimsonHouseMenue', function() {
         var { data } = this.mockData;
         var itemOne = removedProp(data, 'alcohol');
         var itemTwo = removedProp(data, 'beef');
-        var items = instance.excludeItems(data, 'alcohol');
-        items = instance.excludeItems(items, 'beef');
+        var items = this.instance.excludeItems(data, 'alcohol');
+        items = this.instance.excludeItems(items, 'beef');
         assert.equal(items.includes(itemOne), false);
         assert.equal(items.includes(itemTwo), false);
       });
@@ -84,7 +114,7 @@ describe('CrimsonHouseMenue', function() {
       it('excludes type Halal', function() {
         var { data } = this.mockData;
         var halalDish = data.filter(item => item.menuType === 'Halal')[0];
-        var items = instance.excludeItems(data, 'halal');
+        var items = this.instance.excludeItems(data, 'halal');
         assert.equal(items.includes(halalDish), false);
       });
     });
@@ -105,8 +135,7 @@ describe('CrimsonHouseMenue', function() {
         var displayMock = sinon.stub(instance, 'displayMenu').callsFake(() => true);
 
         instance.fetchMenu();
-        var lastUrl = fetchSandbox.lastUrl();
-        assert(lastUrl.endsWith(`menuDate=${date}`));
+        assert(fetchSandbox.lastUrl().endsWith(`menuDate=${date}`));
       });
     });
   });
@@ -116,6 +145,67 @@ describe('CrimsonHouseMenue', function() {
       var instance = instanceWithOptions();
       assert.equal(instance.formatDate('20130912'), '2013\\09\\12');
     });
+  });
+
+  describe('filterAndSortItems', function() {
+    it('returns empty array when length of items is zero', function() {
+      var instance = instanceWithoutOptions();
+      var items = instance.filterAndSortItems([]);
+      assert(items.length === 0);
+    });
+
+    describe('filters', function() {
+      beforeEach(async function() {
+        this.mockData = await getMockData();
+      });
+
+      it('filters by floor', function() {
+        var floor = 9;
+        var instance = instanceWithOptions({ floor });
+        var items = instance.filterAndSortItems(this.mockData.data);
+        var keys = Object.keys(items);
+        assert(keys.length === 1);
+        assert(keys[0] === `${floor}F`);
+        assert(items[keys[0]][0].cafeteriaId === `${floor}F`);
+      });
+
+      it('filters by mealtime', function() {
+        var instance = instanceWithOptions({ time: 'lunch' });
+        var items = instance.filterAndSortItems(this.mockData.data);
+        var keys = Object.keys(items);
+        var allItems = Object.assign(items[keys[0]], items[keys[1]]);
+        var allItemsWithMealtime = allItems.filter((el) => el.mealTime === 1);
+        assert(allItems.length === allItemsWithMealtime.length);
+      });
+
+      it('fillters healthy only items', function() {
+        var instance = instanceWithOptions({
+          floor: 22,
+          'healthy-only': true,
+          time: 'lunch'
+        });
+        var items = instance.filterAndSortItems(this.mockData.data);
+        var keys = Object.keys(items);
+        assert(items[keys[0]][0].title === 'Healthy Item');
+      });
+    });
+
+    describe('exclude option', function() {
+      before(async function() {
+        this.mockData = await getMockData();
+      });
+
+      it('calls exclude once for each value passed', function() {
+        var exclude = ['a', 'b', 'c'];
+        var instance = instanceWithOptions({ exclude });
+        var excludeStub = sinon.stub(instance, 'excludeItems').returnsArg(0);
+        var items = instance.filterAndSortItems(this.mockData.data);
+        sinon.assert.callCount(excludeStub, exclude.length);
+      });
+    });
+
+    it('sorts items by menuType');
+    it('returns an object containing one object for each floor');
   });
 
   describe('getDate', function() {

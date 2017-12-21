@@ -274,7 +274,7 @@
       "pork": false
     },
     "mealDate": "20170713",
-    "mealTime": 2,
+    "mealTime": 1,
     "menuId": 11037,
     "menuType": "Main A",
     "price": 0,
@@ -309,7 +309,7 @@
     "title": "Stir-fried pork & atsuage with starchy sauce",
     "umaiCount": 0
   }, {
-    "cafeteriaId": "9F",
+    "cafeteriaId": "22F",
     "calories": 679,
     "component": {
       "carb": 97.4,
@@ -337,7 +337,7 @@
     "title": "Pork curry with rice",
     "umaiCount": 0
   }, {
-    "cafeteriaId": "9F",
+    "cafeteriaId": "22F",
     "calories": 340,
     "component": {
       "carb": 66.6,
@@ -352,20 +352,20 @@
       "beef": false,
       "chicken": false,
       "fish": true,
-      "healthy": false,
+      "healthy": true,
       "ingredientsId": 11040,
       "mutton": false,
       "pork": false
     },
     "mealDate": "20170713",
-    "mealTime": 2,
+    "mealTime": 1,
     "menuId": 11040,
     "menuType": "Udon & Soba",
     "price": 0,
-    "title": "Kake Soba or Udon",
+    "title": "Healthy Item",
     "umaiCount": 0
   }, {
-    "cafeteriaId": "9F",
+    "cafeteriaId": "22F",
     "calories": 658,
     "component": {
       "carb": 73.2,
