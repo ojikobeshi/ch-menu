@@ -333,8 +333,8 @@
     "mealTime": 2,
     "menuId": 11039,
     "menuType": "Bowl A",
-    "price": 0,
-    "title": "Pork curry with rice",
+    "price": 250,
+    "title": "Pork curry with price",
     "umaiCount": 0
   }, {
     "cafeteriaId": "22F",

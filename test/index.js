@@ -4,7 +4,6 @@ var path = require('path');
 var proxyquire = require('proxyquire');
 var fetchMock = require('fetch-mock');
 var sinon = require('sinon');
-var mockItems = require('./item');
 var fetchSandbox = fetchMock.sandbox();
 var CrimsonHouseMenu = proxyquire('../lib/index', {
   'node-fetch': fetchSandbox
@@ -29,7 +28,7 @@ function getMockData() {
 }
 
 function removedProp(items, prop) {
-  return items.filter(item => item.ingredients[prop])[0];
+  return items.find(item => item.ingredients[prop]);
 }
 
 describe('CrimsonHouseMenue', function() {
@@ -111,13 +110,13 @@ describe('CrimsonHouseMenue', function() {
     describe('menuType', function() {
       it('excludes type Halal', function() {
         var { data } = this.mockData;
-        var halalDish = data.filter(item => item.menuType === 'Halal')[0];
+        var halalDish = data.find(item => item.menuType === 'Halal');
         var items = this.instance.excludeItems(data, 'halal');
         assert(items.includes(halalDish) === false);
       });
     });
 
-    describe('invaid option', function() {
+    describe('invalid option', function() {
       it('returns initial items', function() {
         var { data } = this.mockData;
         var items = this.instance.excludeItems(data, 'bleep');
@@ -184,7 +183,7 @@ describe('CrimsonHouseMenue', function() {
         assert.equal(allItems.length, allItemsWithMealtime.length);
       });
 
-      it('fillters healthy only items', function() {
+      it('filters healthy only items', function() {
         var instance = instanceWithOptions({
           floor: 22,
           'healthy-only': true,
@@ -197,7 +196,7 @@ describe('CrimsonHouseMenue', function() {
     });
 
     describe('exclude option', function() {
-      before(async function() {
+      beforeEach(async function() {
         this.mockData = await getMockData();
       });
 
@@ -208,10 +207,26 @@ describe('CrimsonHouseMenue', function() {
         var items = instance.filterAndSortItems(this.mockData.data);
         sinon.assert.callCount(excludeStub, exclude.length);
       });
-    });
 
-    it('sorts items by menuType');
-    it('returns an object containing one object for each floor');
+      it('sorts items by menuType', function() {
+        var floor = 9;
+        var instance = instanceWithOptions({ floor });
+        var items = instance.filterAndSortItems(this.mockData.data);
+        var menuTypes = items[`${floor}F`].map((el) => el.menuType);
+        var isSorted = !!menuTypes.reduce((memo, el) => memo && el >= memo && el);
+        assert(isSorted);
+      });
+
+      it('returns an object containing one object for each floor', function() {
+        var floor = 9;
+        var instanceWithOneFloor = instanceWithOptions({ floor });
+        var instanceWithTwoFloors = instanceWithoutOptions();
+        var itemsOne = instanceWithOneFloor.filterAndSortItems(this.mockData.data);
+        var itemsTwo = instanceWithTwoFloors.filterAndSortItems(this.mockData.data);
+        assert.equal(Object.keys(itemsOne).length, 1);
+        assert.equal(Object.keys(itemsTwo).length, 2);
+      });
+    });
   });
 
   describe('getDate', function() {
@@ -328,6 +343,9 @@ describe('CrimsonHouseMenue', function() {
   });
 
   describe('print', function() {
+    beforeEach(async function() {
+      this.mockData = await getMockData();
+    });
 
     describe('show images option is active', function() {
       it('calls log with the formatted item information');
@@ -345,15 +363,28 @@ describe('CrimsonHouseMenue', function() {
       })
 
       it('calls log with the floor headline and item info', function() {
-        var items = { '9F': [mockItems[0]] };
+        var { data } = this.mockData;
+        var items = { [data[0].cafeteriaId]: [data[0]] };
         this.instance.print(items);
         sinon.assert.calledTwice(this.logStub);
-        sinon.assert.calledWith(this.logStub, sinon.match('9F'));
-        sinon.assert.calledWith(this.logStub, sinon.match(mockItems[0].title));
+        sinon.assert.calledWith(this.logStub, sinon.match(data[0].cafeteriaId));
+        sinon.assert.calledWith(this.logStub, sinon.match(data[0].title));
       });
 
-      it('adds item price');
-      it('adds healthy info');
+      it('adds item price', function() {
+        var { data } = this.mockData;
+        var itemWithPrice = data.find((el) => el.price > 0);
+        var items = { '9F': [itemWithPrice] };
+        this.instance.print(items);
+        sinon.assert.calledWith(this.logStub, sinon.match(` (¥${itemWithPrice.price})`));
+      });
+      it('adds healthy info', function() {
+        var { data } = this.mockData;
+        var healthyItem = data.find((el) => el.ingredients.healthy);
+        var items = { '9F': [healthyItem] };
+        this.instance.print(items);
+        sinon.assert.calledWith(this.logStub, sinon.match(' (healthy)'));
+      });
     });
   });
 });
