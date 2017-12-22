@@ -1,6 +1,6 @@
 {
   "name": "crimson-house-menu",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "Shows the Crimson House Cafeteria menu",
   "main": "./lib/index.js",
   "bin": "./lib/cli.js",

@@ -31,7 +31,7 @@ function removedProp(items, prop) {
   return items.find(item => item.ingredients[prop]);
 }
 
-describe('CrimsonHouseMenue', function() {
+describe('CrimsonHouseMenu', function() {
   describe('displayMenu', function() {
     before(function() {
       this.emptyData = { data: [] };
