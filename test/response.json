@@ -1,0 +1,398 @@
+{
+  "correlationId": "32ad9581-d79e-4abd-9eea-9735cc1dabfe",
+  "data": [{
+    "cafeteriaId": "9F",
+    "calories": 277,
+    "component": {
+      "carb": 18.7,
+      "componentId": 10652,
+      "fat": 12.2,
+      "protein": 23.0,
+      "sodium": 2.3
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/771ab19f-4ba1-4b2d-86ad-a83045508130.jpg",
+    "ingredients": {
+      "alcohol": false,
+      "beef": false,
+      "chicken": false,
+      "fish": true,
+      "healthy": false,
+      "ingredientsId": 10652,
+      "mutton": false,
+      "pork": false
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 10652,
+    "menuType": "Halal",
+    "price": 0,
+    "title": "Grilled white fish (Hoki) with tom yum sauce",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 576,
+    "component": {
+      "carb": 10.4,
+      "componentId": 11029,
+      "fat": 49.9,
+      "protein": 18.2,
+      "sodium": 1.6
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/5911de5b-64b1-4544-aabe-3088f83aa38c.jpg",
+    "ingredients": {
+      "alcohol": false,
+      "beef": false,
+      "chicken": false,
+      "fish": false,
+      "healthy": false,
+      "ingredientsId": 11029,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11029,
+    "menuType": "Main A",
+    "price": 0,
+    "title": "Pork cutlet",
+    "umaiCount": 1
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 549,
+    "component": {
+      "carb": 5.0,
+      "componentId": 11030,
+      "fat": 43.4,
+      "protein": 29.1,
+      "sodium": 4.0
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/2ea0c97f-98a2-43eb-b012-2b6142a33279.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": false,
+      "chicken": false,
+      "fish": true,
+      "healthy": false,
+      "ingredientsId": 11030,
+      "mutton": false,
+      "pork": false
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11030,
+    "menuType": "Main B",
+    "price": 0,
+    "title": "Grilled mackerel (Saba) with mirin",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 452,
+    "component": {
+      "carb": 14.5,
+      "componentId": 11031,
+      "fat": 36.7,
+      "protein": 14.5,
+      "sodium": 0.9
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/44c89e02-0717-49dc-a669-1568de6d8612.jpg",
+    "ingredients": {
+      "alcohol": false,
+      "beef": true,
+      "chicken": false,
+      "fish": false,
+      "healthy": false,
+      "ingredientsId": 11031,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11031,
+    "menuType": "Main C",
+    "price": 0,
+    "title": "Stir-fried pork, kikurage & egg",
+    "umaiCount": 1
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 609,
+    "component": {
+      "carb": 55.3,
+      "componentId": 11032,
+      "fat": 35.1,
+      "protein": 17.8,
+      "sodium": 3.9
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/78a68c18-37af-4290-988b-31bd67d85c6a.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": false,
+      "chicken": false,
+      "fish": true,
+      "healthy": false,
+      "ingredientsId": 11032,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11032,
+    "menuType": "Grill",
+    "price": 0,
+    "title": "Crispy noodles (Deep-fried noodles with pork & vegetables in thick sauce)",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 803,
+    "component": {
+      "carb": 92.8,
+      "componentId": 11033,
+      "fat": 32.9,
+      "protein": 28.5,
+      "sodium": 2.2
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/8deef956-1868-406f-9a51-6cb65f5199f7.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": true,
+      "chicken": false,
+      "fish": false,
+      "healthy": false,
+      "ingredientsId": 11033,
+      "mutton": false,
+      "pork": false
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11033,
+    "menuType": "Bowl A",
+    "price": 0,
+    "title": "Chicken Jambalaya",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 627,
+    "component": {
+      "carb": 79.4,
+      "componentId": 11034,
+      "fat": 21.6,
+      "protein": 24.6,
+      "sodium": 3.1
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/3e35dbfa-e16d-425c-85bf-a149bbc8fa28.jpg",
+    "ingredients": {
+      "alcohol": false,
+      "beef": false,
+      "chicken": false,
+      "fish": true,
+      "healthy": false,
+      "ingredientsId": 11034,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11034,
+    "menuType": "Pasta",
+    "price": 0,
+    "title": "Spaghetti  with clams & bacon cream sauce",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 571,
+    "component": {
+      "carb": 84.7,
+      "componentId": 11035,
+      "fat": 16.4,
+      "protein": 16.1,
+      "sodium": 3.1
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/f685335d-d10f-45ed-9f9e-3a1e638ed0a2.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": false,
+      "chicken": false,
+      "fish": true,
+      "healthy": false,
+      "ingredientsId": 11035,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11035,
+    "menuType": "Udon & Soba",
+    "price": 0,
+    "title": "Curry-nanban Soba or Udon",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 750,
+    "component": {
+      "carb": 77.2,
+      "componentId": 11036,
+      "fat": 30.4,
+      "protein": 34.5,
+      "sodium": 9.3
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/192b2e79-96bc-473b-831c-01c51cbfef65.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": false,
+      "chicken": false,
+      "fish": false,
+      "healthy": false,
+      "ingredientsId": 11036,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11036,
+    "menuType": "Ramen",
+    "price": 0,
+    "title": "Shoyu Ramen Tokushima-style",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 304,
+    "component": {
+      "carb": 2.1,
+      "componentId": 11037,
+      "fat": 20.9,
+      "protein": 23.6,
+      "sodium": 1.3
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/615b4b62-846f-49fa-b662-edb77ec5e1c7.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": false,
+      "chicken": false,
+      "fish": false,
+      "healthy": false,
+      "ingredientsId": 11037,
+      "mutton": false,
+      "pork": false
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11037,
+    "menuType": "Main A",
+    "price": 0,
+    "title": "Grilled chicken with Japanese sauce",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "9F",
+    "calories": 626,
+    "component": {
+      "carb": 12.5,
+      "componentId": 11038,
+      "fat": 51.5,
+      "protein": 24.1,
+      "sodium": 4.4
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/6488cbc9-8ef1-4d33-8677-d35fe487560a.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": false,
+      "chicken": false,
+      "fish": false,
+      "healthy": false,
+      "ingredientsId": 11038,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 2,
+    "menuId": 11038,
+    "menuType": "Main B",
+    "price": 0,
+    "title": "Stir-fried pork & atsuage with starchy sauce",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "22F",
+    "calories": 679,
+    "component": {
+      "carb": 97.4,
+      "componentId": 11039,
+      "fat": 22.7,
+      "protein": 16.9,
+      "sodium": 3.7
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/ff09e0c4-b606-4e4e-9096-eb2af29669aa.jpg",
+    "ingredients": {
+      "alcohol": false,
+      "beef": false,
+      "chicken": false,
+      "fish": false,
+      "healthy": false,
+      "ingredientsId": 11039,
+      "mutton": false,
+      "pork": true
+    },
+    "mealDate": "20170713",
+    "mealTime": 2,
+    "menuId": 11039,
+    "menuType": "Bowl A",
+    "price": 250,
+    "title": "Pork curry with price",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "22F",
+    "calories": 340,
+    "component": {
+      "carb": 66.6,
+      "componentId": 11040,
+      "fat": 1.9,
+      "protein": 12.3,
+      "sodium": 6.0
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/4056eb93-38d6-4684-8a50-e1d11ae4ad6c.jpg",
+    "ingredients": {
+      "alcohol": true,
+      "beef": false,
+      "chicken": false,
+      "fish": true,
+      "healthy": true,
+      "ingredientsId": 11040,
+      "mutton": false,
+      "pork": false
+    },
+    "mealDate": "20170713",
+    "mealTime": 1,
+    "menuId": 11040,
+    "menuType": "Udon & Soba",
+    "price": 0,
+    "title": "Healthy Item",
+    "umaiCount": 0
+  }, {
+    "cafeteriaId": "22F",
+    "calories": 658,
+    "component": {
+      "carb": 73.2,
+      "componentId": 11041,
+      "fat": 30.2,
+      "protein": 17.2,
+      "sodium": 2.5
+    },
+    "imageURL": "https://rakutentowerman.blob.core.windows.net/menuimages/af075ceb-3809-45dc-af76-2534b211a5ab.jpg",
+    "ingredients": {
+      "alcohol": false,
+      "beef": false,
+      "chicken": false,
+      "fish": true,
+      "healthy": false,
+      "ingredientsId": 11041,
+      "mutton": false,
+      "pork": false
+    },
+    "mealDate": "20170713",
+    "mealTime": 2,
+    "menuId": 11041,
+    "menuType": "Pasta",
+    "price": 0,
+    "title": "Pepperoncino with shrimp & broccoli",
+    "umaiCount": 0
+  }],
+  "errorMessage": null,
+  "result": "SUCCESS"
+}
