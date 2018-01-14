@@ -38,8 +38,40 @@ describe('CrimsonHouseMenu', function() {
       this.mockItems = [1, 2, 3];
     });
 
+    describe('menu title', function() {
+      beforeEach(function() {
+        this.date = [2018, 10, 24];
+        this.instance = instanceWithOptions({
+          date: this.date.join('')
+        });
+        var filterStub = sinon.stub(this.instance, 'filterAndSortItems').callsFake(() => []);
+        this.logStub = sinon.stub(this.instance, 'log');
+      });
+
+      it('contains formatted date', function() {
+        this.instance.displayMenu(this.emptyData);
+        assert(this.logStub.calledWithMatch(this.date.join('\\')));
+      });
+
+      it('contains correct title during lunch time', function() {
+        var mealTimeStub = sinon.stub(this.instance, 'mealTime').get(function getterFn() {
+          return 1;
+        });
+        this.instance.displayMenu(this.emptyData);
+        assert(this.logStub.calledWithMatch(/lunch/));
+      });
+
+      it('contains correct title during dinner time', function() {
+        var mealTimeStub = sinon.stub(this.instance, 'mealTime').get(function getterFn() {
+          return 2;
+        });
+        this.instance.displayMenu(this.emptyData);
+        assert(this.logStub.calledWithMatch(/dinner/));
+      });
+    });
+
     describe('items array is empty', function() {
-      it('prints title and returns no menu message', function() {
+      it('prints no menu message', function() {
         var instance = instanceWithoutOptions();
         var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => []);
         var logStub = sinon.stub(instance, 'log');
@@ -79,6 +111,12 @@ describe('CrimsonHouseMenu', function() {
           assert(printStub.calledWith(this.mockItems));
         });
       });
+    });
+
+    describe('terminal app is supported', function() {
+      it('creates progress bar');
+      it('fetches images');
+      it('calls print with pre-loaded images');
     });
   });
 
