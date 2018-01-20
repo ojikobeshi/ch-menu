@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "chalk": "^2.3.0",
-    "command-line-args": "^4.0.7",
+    "command-line-args": "^5.0.1",
     "imgcat": "^2.3.0",
     "node-fetch": "^1.7.3",
     "pad": "^2.0.1",
@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "fetch-mock": "^5.13.1",
-    "mocha": "^4.1.0",
+    "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "proxyquire": "^1.8.0",
-    "sinon": "^4.1.5"
+    "sinon": "^4.1.6"
   }
 }
