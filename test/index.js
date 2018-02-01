@@ -56,7 +56,7 @@ describe('CrimsonHouseMenu', function() {
 
       it('contains formatted date', function() {
         this.instance.displayMenu(this.emptyData);
-        assert(this.logStub.calledWithMatch(this.date.join('\\')));
+        assert(this.logStub.calledWithMatch(this.date.join('/')));
       });
 
       describe('menu time in title', function() {
@@ -215,9 +215,9 @@ describe('CrimsonHouseMenu', function() {
   });
 
   describe('formatDate', function() {
-    it('returns the date in the format YYYY\MM\DD', function() {
+    it('returns the date in the format YYYY/MM/DD', function() {
       var instance = instanceWithOptions();
-      assert.equal(instance.formatDate('20130912'), '2013\\09\\12');
+      assert.equal(instance.formatDate('20130912'), '2013/09/12');
     });
   });
 
@@ -310,7 +310,7 @@ describe('CrimsonHouseMenu', function() {
 
       describe('formatted', function() {
         it('should return formatted date string', function() {
-          assert(!!instance.getDate(true).match(/\d{4}\\\d{2}\\\d{2}/));
+          assert(!!instance.getDate(true).match(/\d{4}\/\d{2}\/\d{2}/));
         });
       });
     });
@@ -327,7 +327,7 @@ describe('CrimsonHouseMenu', function() {
 
       describe('formatted', function() {
         it('should return formatted date string from options', function() {
-          assert.equal(instance.getDate(true), '1996\\01\\01');
+          assert.equal(instance.getDate(true), '1996/01/01');
         });
       });
     });
