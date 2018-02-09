@@ -1,5 +1,7 @@
 # Crimson House Menu
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JohannesFischer/crimson-house-menu.svg)](https://greenkeeper.io/)
+
 [![npm version](https://badge.fury.io/js/crimson-house-menu.svg)](https://badge.fury.io/js/crimson-house-menu)
 
 See what's for lunch / dinner in Crimson House Tokyo.
