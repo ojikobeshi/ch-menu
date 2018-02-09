@@ -1,6 +1,6 @@
 {
   "name": "crimson-house-menu",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "Shows the Crimson House Cafeteria menu",
   "main": "./lib/index.js",
   "bin": "./lib/cli.js",
@@ -32,6 +32,6 @@
     "mocha": "^5.0.0",
     "nyc": "^11.4.1",
     "proxyquire": "^1.8.0",
-    "sinon": "^4.1.3"
+    "sinon": "^4.2.2"
   }
 }
