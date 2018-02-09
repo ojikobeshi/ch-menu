@@ -21,9 +21,9 @@
   },
   "dependencies": {
     "chalk": "^2.3.0",
-    "command-line-args": "^5.0.1",
+    "command-line-args": "^5.0.2",
     "imgcat": "^2.3.0",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.0.0",
     "pad": "^2.0.1",
     "progress": "^2.0.0"
   },
