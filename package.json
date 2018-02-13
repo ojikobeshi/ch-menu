@@ -5,7 +5,8 @@
   "main": "./lib/index.js",
   "bin": "./lib/cli.js",
   "scripts": {
-    "test": "nyc -r html -r text mocha ./test && nyc report -r text-lcov | coveralls"
+    "test": "nyc -r html -r text mocha ./test && nyc report -r text-lcov | coveralls",
+    "test:watch": "mocha -w ./test"
   },
   "keywords": [
     "rakuten",

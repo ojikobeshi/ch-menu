@@ -5,8 +5,8 @@ var proxyquire = require('proxyquire');
 var fetchMock = require('fetch-mock');
 var sinon = require('sinon');
 var fetchSandbox = fetchMock.sandbox();
-var progressSpy = sinon.stub().callsFake(() => { console.log('fake progress'); return true;});
-var imgcatSpy = sinon.stub().resolves(() => {console.log('fake imgcat'); return true});
+var progressSpy = sinon.stub().callsFake(() => { console.log('fake progress'); return true; });
+var imgcatSpy = sinon.stub().resolves(() => { console.log('fake imgcat'); return true; });
 var CrimsonHouseMenu = proxyquire('../lib/index', {
   imgcat: imgcatSpy,
   'node-fetch': fetchSandbox,
@@ -214,6 +214,11 @@ describe('CrimsonHouseMenu', function() {
     });
   });
 
+  describe('fetchImages', function() {
+    it('fetches all images using imgcat');
+    it('eventually calls print');
+  });
+
   describe('formatDate', function() {
     it('returns the date in the format YYYY/MM/DD', function() {
       var instance = instanceWithOptions();
@@ -417,8 +422,25 @@ describe('CrimsonHouseMenu', function() {
     });
 
     describe('show images option is active', function() {
-      it('calls log with the formatted item information');
-      it('formated line contains the item image');
+      before(function() {
+        this.instance = instanceWithOptions({ 'show-images': true });
+        this.logStub = sinon.stub(this.instance, 'log');
+      });
+
+      after(function() {
+        sinon.stub.reset();
+      });
+
+      it('formated line contains the item image', function() {
+        var { data } = this.mockData;
+        var items = { [data[0].cafeteriaId]: [data[0]] };
+        var image = 'test image blob';
+        var images = {}
+        images[data[0].menuId] = image;
+        this.instance.print(items, images);
+        sinon.assert.calledTwice(this.logStub);
+        sinon.assert.calledWith(this.logStub, sinon.match(image));
+      });
     });
 
     describe('without show images option', function() {
@@ -447,6 +469,7 @@ describe('CrimsonHouseMenu', function() {
         this.instance.print(items);
         sinon.assert.calledWith(this.logStub, sinon.match(` (¥${itemWithPrice.price})`));
       });
+
       it('adds healthy info', function() {
         var { data } = this.mockData;
         var healthyItem = data.find((el) => el.ingredients.healthy);
