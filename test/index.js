@@ -5,8 +5,8 @@ var proxyquire = require('proxyquire');
 var fetchMock = require('fetch-mock');
 var sinon = require('sinon');
 var fetchSandbox = fetchMock.sandbox();
-var progressSpy = sinon.stub().callsFake(() => { console.log('fake progress'); return true; });
-var imgcatSpy = sinon.stub().resolves(() => { console.log('fake imgcat'); return true; });
+var progressSpy = sinon.stub().callsFake(() => { return true; });
+var imgcatSpy = sinon.stub().resolves(true);
 var CrimsonHouseMenu = proxyquire('../lib/index', {
   imgcat: imgcatSpy,
   'node-fetch': fetchSandbox,
@@ -121,34 +121,19 @@ describe('CrimsonHouseMenu', function() {
       });
     });
 
-    // describe('terminal app is supported', function() {
-    //   before(async function() {
-    //     process.env.TERM_PROGRAM = this.supportedTerminal;
-    //     this.floor = 22;
-    //     this.mealTime = 1;
-    //     this.time = 'lunch'
-    //     this.mockData = await getMockData();
-    //     this.instance = instanceWithOptions({
-    //       floor: this.floor,
-    //       'show-images': true,
-    //       time: this.time
-    //     });
-    //     var logStub = sinon.stub(this.instance, 'log');
-    //     this.printStub = sinon.stub(this.instance, 'print');
-    //     this.instance.displayMenu(this.mockData);
-    //   });
+    describe('terminal app is supported', function() {
+      it('calls fetchImages', function() {
+        process.env.TERM_PROGRAM = this.supportedTerminal;
+        var instance = instanceWithOptions({ 'show-images': true });
+        var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
+        var logStub = sinon.stub(instance, 'log');
+        var fetchImageStub = sinon.stub(instance, 'fetchImages');
+        instance.displayMenu(this.emptyData);
 
-    //   it('creates progress bar', function() {
-    //     sinon.assert.calledOnce(progressSpy);
-    //   });
-
-    //   it('fetches images', function() {
-    //     var items = this.mockData.data.filter(item => item.mealTime === this.mealTime && item.cafeteriaId === `${this.floor}F`);
-    //     assert(imgcatSpy.callCount === items.length);
-    //   });
-
-    //   it('calls print with pre-loaded images');
-    // });
+        sinon.assert.calledOnce(fetchImageStub);
+        sinon.assert.calledWith(fetchImageStub, this.mockItems);
+      });
+    });
   });
 
   describe('excludeItems', function() {
@@ -215,8 +200,30 @@ describe('CrimsonHouseMenu', function() {
   });
 
   describe('fetchImages', function() {
-    it('fetches all images using imgcat');
-    it('eventually calls print');
+    before(async function() {
+      var floor = 9;
+      this.instance = instanceWithOptions({ floor });
+      this.mockData = await getMockData();
+      this.logStub = sinon.stub(this.instance, 'log');
+      this.printStub = sinon.stub(this.instance, 'print');
+      this.items = this.instance.filterAndSortItems(this.mockData.data);
+    });
+
+    beforeEach(function() {
+      this.instance.fetchImages(this.items);
+    });
+
+    it('fetches all images using imgcat', function() {
+      assert.equal(imgcatSpy.callCount, this.items['9F'].length);
+    });
+
+    it('eventually calls print', function() {
+      sinon.assert.calledOnce(this.printStub);
+    });
+
+    it('creates progress bar', function() {
+      sinon.assert.calledThrice(progressSpy);
+    });
   });
 
   describe('formatDate', function() {
