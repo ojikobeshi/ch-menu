@@ -5,8 +5,9 @@
   "main": "./lib/index.js",
   "bin": "./lib/cli.js",
   "scripts": {
-    "test": "nyc -r html -r text mocha ./test && nyc report -r text-lcov | coveralls",
-    "test:watch": "mocha -w ./test"
+    "test": "npm run test:cov && nyc report -r text-lcov | coveralls",
+    "test:cov": "nyc -r html -r text mocha --recursive ./test/",
+    "test:watch": "mocha -w --recursive ./test/"
   },
   "keywords": [
     "rakuten",

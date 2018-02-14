@@ -1,6 +1,6 @@
 module.exports = {
   countObjectValues(obj) {
-    return Object.keys(items).reduce((count, o) => {
+    return Object.keys(obj).reduce((count, o) => {
       return count + Object.keys(obj[o]).length;
     }, 0);
   },
