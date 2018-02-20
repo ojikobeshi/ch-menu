@@ -1,4 +1,5 @@
 var assert = require('assert');
+var sinon = require('sinon');
 var util = require('../../util/');
 
 describe('utils', function() {
@@ -13,11 +14,31 @@ describe('utils', function() {
     });
   });
 
+  describe('formatDate', function() {
+    it('returns the date in the format YYYY/MM/DD', function() {
+      assert.equal(util.formatDate('20130912'), '2013/09/12');
+    });
+  });
+
   describe('longestValue', function() {
     it('returns length of the longest value of array', function() {
       const arr = ['a', 'longest', 'ab'];
-      assert.equal(util.longestValue(arr), 7);
+      assert.equal(util.longestValue(arr), arr[1].length);
       assert.equal(util.longestValue([]), 0);
+    });
+  });
+
+  describe('makeDate', function() {
+    before(function() {
+      this.date = sinon.useFakeTimers(new Date(2017, 0, 1).getTime());
+    });
+
+    after(function() {
+      this.date.restore();
+    });
+
+    it('returns todays date in YYYYMMMDD format', function() {
+      assert.equal(util.makeDate(), '20170101');
     });
   });
 });
