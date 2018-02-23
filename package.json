@@ -5,7 +5,9 @@
   "main": "./lib/index.js",
   "bin": "./lib/cli.js",
   "scripts": {
-    "test": "nyc -r html -r text mocha ./test"
+    "test": "npm run test:cov && nyc report -r text-lcov | coveralls",
+    "test:cov": "nyc -r html -r text mocha --recursive ./test/",
+    "test:watch": "mocha -w --recursive ./test/"
   },
   "keywords": [
     "rakuten",
@@ -28,8 +30,10 @@
     "progress": "^2.0.0"
   },
   "devDependencies": {
+    "coveralls": "^3.0.0",
     "fetch-mock": "^6.0.0",
     "mocha": "^5.0.0",
+    "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^11.4.1",
     "proxyquire": "^1.8.0",
     "sinon": "^4.2.2"
