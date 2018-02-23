@@ -5,8 +5,8 @@ var proxyquire = require('proxyquire');
 var fetchMock = require('fetch-mock');
 var sinon = require('sinon');
 var fetchSandbox = fetchMock.sandbox();
-var progressSpy = sinon.stub().callsFake(() => { console.log('fake progress'); return true;});
-var imgcatSpy = sinon.stub().resolves(() => {console.log('fake imgcat'); return true});
+var progressSpy = sinon.stub().callsFake(() => { return true; });
+var imgcatSpy = sinon.stub().resolves(true);
 var CrimsonHouseMenu = proxyquire('../lib/index', {
   imgcat: imgcatSpy,
   'node-fetch': fetchSandbox,
@@ -121,34 +121,19 @@ describe('CrimsonHouseMenu', function() {
       });
     });
 
-    // describe('terminal app is supported', function() {
-    //   before(async function() {
-    //     process.env.TERM_PROGRAM = this.supportedTerminal;
-    //     this.floor = 22;
-    //     this.mealTime = 1;
-    //     this.time = 'lunch'
-    //     this.mockData = await getMockData();
-    //     this.instance = instanceWithOptions({
-    //       floor: this.floor,
-    //       'show-images': true,
-    //       time: this.time
-    //     });
-    //     var logStub = sinon.stub(this.instance, 'log');
-    //     this.printStub = sinon.stub(this.instance, 'print');
-    //     this.instance.displayMenu(this.mockData);
-    //   });
+    describe('terminal app is supported', function() {
+      it('calls fetchImages', function() {
+        process.env.TERM_PROGRAM = this.supportedTerminal;
+        var instance = instanceWithOptions({ 'show-images': true });
+        var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
+        var logStub = sinon.stub(instance, 'log');
+        var fetchImageStub = sinon.stub(instance, 'fetchImages');
+        instance.displayMenu(this.emptyData);
 
-    //   it('creates progress bar', function() {
-    //     sinon.assert.calledOnce(progressSpy);
-    //   });
-
-    //   it('fetches images', function() {
-    //     var items = this.mockData.data.filter(item => item.mealTime === this.mealTime && item.cafeteriaId === `${this.floor}F`);
-    //     assert(imgcatSpy.callCount === items.length);
-    //   });
-
-    //   it('calls print with pre-loaded images');
-    // });
+        sinon.assert.calledOnce(fetchImageStub);
+        sinon.assert.calledWith(fetchImageStub, this.mockItems);
+      });
+    });
   });
 
   describe('excludeItems', function() {
@@ -214,10 +199,30 @@ describe('CrimsonHouseMenu', function() {
     });
   });
 
-  describe('formatDate', function() {
-    it('returns the date in the format YYYY/MM/DD', function() {
-      var instance = instanceWithOptions();
-      assert.equal(instance.formatDate('20130912'), '2013/09/12');
+  describe('fetchImages', function() {
+    before(async function() {
+      var floor = 9;
+      this.instance = instanceWithOptions({ floor });
+      this.mockData = await getMockData();
+      this.logStub = sinon.stub(this.instance, 'log');
+      this.printStub = sinon.stub(this.instance, 'print');
+      this.items = this.instance.filterAndSortItems(this.mockData.data);
+    });
+
+    beforeEach(function() {
+      this.instance.fetchImages(this.items);
+    });
+
+    it('fetches all images using imgcat', function() {
+      assert.equal(imgcatSpy.callCount, this.items['9F'].length);
+    });
+
+    it('eventually calls print', function() {
+      sinon.assert.calledOnce(this.printStub);
+    });
+
+    it('creates progress bar', function() {
+      sinon.assert.calledThrice(progressSpy);
     });
   });
 
@@ -396,29 +401,31 @@ describe('CrimsonHouseMenu', function() {
     });
   });
 
-  describe('makeDate', function() {
-    before(function() {
-      this.date = sinon.useFakeTimers(new Date(2017, 0, 1).getTime());
-    });
-
-    after(function() {
-      this.date.restore();
-    });
-
-    it('returns todays date in YYYYMMMDD format', function() {
-      var instance = instanceWithoutOptions();
-      assert.equal(instance.makeDate(), '20170101');
-    });
-  });
-
   describe('print', function() {
     beforeEach(async function() {
       this.mockData = await getMockData();
     });
 
     describe('show images option is active', function() {
-      it('calls log with the formatted item information');
-      it('formated line contains the item image');
+      before(function() {
+        this.instance = instanceWithOptions({ 'show-images': true });
+        this.logStub = sinon.stub(this.instance, 'log');
+      });
+
+      after(function() {
+        sinon.stub.reset();
+      });
+
+      it('formated line contains the item image', function() {
+        var { data } = this.mockData;
+        var items = { [data[0].cafeteriaId]: [data[0]] };
+        var image = 'test image blob';
+        var images = {}
+        images[data[0].menuId] = image;
+        this.instance.print(items, images);
+        sinon.assert.calledTwice(this.logStub);
+        sinon.assert.calledWith(this.logStub, sinon.match(image));
+      });
     });
 
     describe('without show images option', function() {
@@ -447,6 +454,7 @@ describe('CrimsonHouseMenu', function() {
         this.instance.print(items);
         sinon.assert.calledWith(this.logStub, sinon.match(` (¥${itemWithPrice.price})`));
       });
+
       it('adds healthy info', function() {
         var { data } = this.mockData;
         var healthyItem = data.find((el) => el.ingredients.healthy);
