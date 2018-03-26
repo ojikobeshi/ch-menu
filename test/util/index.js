@@ -41,4 +41,16 @@ describe('utils', function() {
       assert.equal(util.makeDate(), '20170101');
     });
   });
+
+  describe('terminalSupportsInlineImages', function() {
+    it('returns true for supported terminals', function() {
+      process.env.TERM_PROGRAM = 'iTerm.app';
+      assert.equal(util.terminalSupportsInlineImages(), true)
+    });
+
+    it('returns false for unsupported terminals', function() {
+      process.env.TERM_PROGRAM = 'not_iTerm';
+      assert.equal(util.terminalSupportsInlineImages(), false)
+    });
+  })
 });

@@ -22,5 +22,8 @@ module.exports = {
     const day = pad(2, now.getDate(), '0');
 
     return `${year}${month}${day}`;
+  },
+  terminalSupportsInlineImages() {
+    return process.env.TERM_PROGRAM === 'iTerm.app';
   }
 };

@@ -182,10 +182,11 @@ describe('CrimsonHouseMenu', function() {
   describe('fetchImages', function() {
     describe('Terminal app is not supported', function() {
       before(function() {
-        process.env.TERM_PROGRAM = 'not_iTerm';
         this.instance = instanceWithOptions({ 'show-images': true });
+        this.instance.canDisplayImages = false;
         this.logStub = sinon.stub(this.instance, 'log');
         this.printStub = sinon.stub(this.instance, 'print');
+        this.terminalStub = sinon.stub()
         this.instance.fetchImages({});
       });
 
@@ -202,8 +203,8 @@ describe('CrimsonHouseMenu', function() {
     describe('Terminal app is supported', function() {
       before(async function() {
         const floor = 9;
-        process.env.TERM_PROGRAM = 'iTerm.app';
         this.instance = instanceWithOptions({ floor });
+        this.instance.canDisplayImages = true;
         this.mockData = await getMockData();
         this.logStub = sinon.stub(this.instance, 'log');
         this.printStub = sinon.stub(this.instance, 'print');
