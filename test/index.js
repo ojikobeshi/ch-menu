@@ -5,12 +5,17 @@ const proxyquire = require('proxyquire');
 const fetchMock = require('fetch-mock');
 const sinon = require('sinon');
 const fetchSandbox = fetchMock.sandbox();
-const progressSpy = sinon.stub().callsFake(() => { return true; });
 const imgcatSpy = sinon.stub().resolves(true);
 const CrimsonHouseMenu = proxyquire('../lib/index', {
   imgcat: imgcatSpy,
   'node-fetch': fetchSandbox,
-  progress: progressSpy
+  // 'cli-progress': {
+  //   Bar: () => true,
+  //   start: () => true,
+  //   increment: () => true,
+  //   stop: () => true,
+  //   '@noCallThru': true
+  // }
 });
 
 function instanceWithOptions(options) {
@@ -209,9 +214,6 @@ describe('CrimsonHouseMenu', function() {
         this.logStub = sinon.stub(this.instance, 'log');
         this.printStub = sinon.stub(this.instance, 'print');
         this.items = this.instance.filterAndSortItems(this.mockData.data);
-      });
-
-      beforeEach(function() {
         this.instance.fetchImages(this.items);
       });
 
@@ -223,9 +225,7 @@ describe('CrimsonHouseMenu', function() {
         sinon.assert.calledOnce(this.printStub);
       });
 
-      it('creates progress bar', function() {
-        sinon.assert.calledThrice(progressSpy);
-      });
+      it('creates progress bar');
     });
   });
 

@@ -1,6 +1,6 @@
-var assert = require('assert');
-var sinon = require('sinon');
-var util = require('../../util/');
+const assert = require('assert');
+const sinon = require('sinon');
+const util = require('../../util/');
 
 describe('utils', function() {
   describe('countObjectValues', function() {
