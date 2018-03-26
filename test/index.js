@@ -1,13 +1,13 @@
-var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
-var proxyquire = require('proxyquire');
-var fetchMock = require('fetch-mock');
-var sinon = require('sinon');
-var fetchSandbox = fetchMock.sandbox();
-var progressSpy = sinon.stub().callsFake(() => { return true; });
-var imgcatSpy = sinon.stub().resolves(true);
-var CrimsonHouseMenu = proxyquire('../lib/index', {
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const proxyquire = require('proxyquire');
+const fetchMock = require('fetch-mock');
+const sinon = require('sinon');
+const fetchSandbox = fetchMock.sandbox();
+const progressSpy = sinon.stub().callsFake(() => { return true; });
+const imgcatSpy = sinon.stub().resolves(true);
+const CrimsonHouseMenu = proxyquire('../lib/index', {
   imgcat: imgcatSpy,
   'node-fetch': fetchSandbox,
   progress: progressSpy
@@ -23,7 +23,7 @@ function instanceWithoutOptions() {
 
 function getMockData() {
   return new Promise((resolve, reject) => {
-    var mockFile = path.join(__dirname, 'response.json');
+    const mockFile = path.join(__dirname, 'response.json');
     fs.readFile(mockFile, 'utf-8', (err, data) => {
       if (err) reject(err);
       resolve(JSON.parse(data));
@@ -40,8 +40,6 @@ describe('CrimsonHouseMenu', function() {
     before(function() {
       this.emptyData = { data: [] };
       this.mockItems = [1, 2, 3];
-      this.supportedTerminal = 'iTerm.app';
-      this.unSupportedTerminal = 'some unsupported terminal';
     });
 
     describe('menu title', function() {
@@ -50,7 +48,7 @@ describe('CrimsonHouseMenu', function() {
         this.instance = instanceWithOptions({
           date: this.date.join('')
         });
-        var filterStub = sinon.stub(this.instance, 'filterAndSortItems').callsFake(() => []);
+        const filterStub = sinon.stub(this.instance, 'filterAndSortItems').callsFake(() => []);
         this.logStub = sinon.stub(this.instance, 'log');
       });
 
@@ -61,7 +59,7 @@ describe('CrimsonHouseMenu', function() {
 
       describe('menu time in title', function() {
         it('during lunch time', function() {
-          var mealTimeStub = sinon.stub(this.instance, 'mealTime').get(function getterFn() {
+          const mealTimeStub = sinon.stub(this.instance, 'mealTime').get(function getterFn() {
             return 1;
           });
           this.instance.displayMenu(this.emptyData);
@@ -69,7 +67,7 @@ describe('CrimsonHouseMenu', function() {
         });
 
         it('during dinner time', function() {
-          var mealTimeStub = sinon.stub(this.instance, 'mealTime').get(function getterFn() {
+          const mealTimeStub = sinon.stub(this.instance, 'mealTime').get(function getterFn() {
             return 2;
           });
           this.instance.displayMenu(this.emptyData);
@@ -80,9 +78,9 @@ describe('CrimsonHouseMenu', function() {
 
     describe('items array is empty', function() {
       it('prints no menu message', function() {
-        var instance = instanceWithoutOptions();
-        var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => []);
-        var logStub = sinon.stub(instance, 'log');
+        const instance = instanceWithoutOptions();
+        const filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => []);
+        const logStub = sinon.stub(instance, 'log');
 
         instance.displayMenu(this.emptyData);
         sinon.assert.calledTwice(logStub);
@@ -93,10 +91,10 @@ describe('CrimsonHouseMenu', function() {
 
     describe('show images option is false', function() {
       it('calls print method with items', function() {
-        var instance = instanceWithoutOptions();
-        var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
-        var logStub = sinon.stub(instance, 'log');
-        var printStub = sinon.stub(instance, 'print');
+        const instance = instanceWithoutOptions();
+        const filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
+        const logStub = sinon.stub(instance, 'log');
+        const printStub = sinon.stub(instance, 'print');
 
         instance.displayMenu(this.emptyData);
         sinon.assert.calledOnce(logStub);
@@ -105,29 +103,11 @@ describe('CrimsonHouseMenu', function() {
     });
 
     describe('show images option is true', function() {
-      describe('terminal app is not supported', function() {
-        it('logs a notification and prints items', function() {
-          process.env.TERM_PROGRAM = this.unSupportedTerminal;
-          var instance = instanceWithOptions({ 'show-images': true });
-          var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
-          var logStub = sinon.stub(instance, 'log');
-          var printStub = sinon.stub(instance, 'print');
-
-          instance.displayMenu(this.emptyData);
-          sinon.assert.calledTwice(logStub);
-          assert.equal(instance.options['show-images'], false);
-          assert(printStub.calledWith(this.mockItems));
-        });
-      });
-    });
-
-    describe('terminal app is supported', function() {
       it('calls fetchImages', function() {
-        process.env.TERM_PROGRAM = this.supportedTerminal;
-        var instance = instanceWithOptions({ 'show-images': true });
-        var filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
-        var logStub = sinon.stub(instance, 'log');
-        var fetchImageStub = sinon.stub(instance, 'fetchImages');
+        const instance = instanceWithOptions({ 'show-images': true });
+        const filterStub = sinon.stub(instance, 'filterAndSortItems').callsFake(() => this.mockItems);
+        const logStub = sinon.stub(instance, 'log');
+        const fetchImageStub = sinon.stub(instance, 'fetchImages');
         instance.displayMenu(this.emptyData);
 
         sinon.assert.calledOnce(fetchImageStub);
@@ -151,10 +131,10 @@ describe('CrimsonHouseMenu', function() {
 
     describe('ingredient', function() {
       it('removes items with matching ingredients', function() {
-        var { data } = this.mockData;
-        var itemOne = removedProp(data, 'alcohol');
-        var itemTwo = removedProp(data, 'beef');
-        var items = this.instance.excludeItems(data, 'alcohol');
+        const { data } = this.mockData;
+        const itemOne = removedProp(data, 'alcohol');
+        const itemTwo = removedProp(data, 'beef');
+        let items = this.instance.excludeItems(data, 'alcohol');
         items = this.instance.excludeItems(items, 'beef');
         assert.equal(items.includes(itemOne), false);
         assert.equal(items.includes(itemTwo), false);
@@ -163,17 +143,17 @@ describe('CrimsonHouseMenu', function() {
 
     describe('menuType', function() {
       it('excludes type Halal', function() {
-        var { data } = this.mockData;
-        var halalDish = data.find(item => item.menuType === 'Halal');
-        var items = this.instance.excludeItems(data, 'halal');
+        const { data } = this.mockData;
+        const halalDish = data.find(item => item.menuType === 'Halal');
+        const items = this.instance.excludeItems(data, 'halal');
         assert(items.includes(halalDish) === false);
       });
     });
 
     describe('invalid option', function() {
       it('returns initial items', function() {
-        var { data } = this.mockData;
-        var items = this.instance.excludeItems(data, 'bleep');
+        const { data } = this.mockData;
+        const items = this.instance.excludeItems(data, 'bleep');
         assert.equal(items, data);
       });
     });
@@ -187,11 +167,11 @@ describe('CrimsonHouseMenu', function() {
 
     describe('successful request', function() {
       it('calls API with date param', function() {
-        var date = '20030630';
-        var apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/cafeteria/menulist?menuDate=';
+        const date = '20030630';
+        const apiUrl = 'http://rakuten-towerman.azurewebsites.net/towerman-restapi/rest/cafeteria/menulist?menuDate=';
         fetchSandbox.mock(apiUrl + date, { result: 'SUCCESS' });
-        var instance = instanceWithOptions({ date });
-        var displayMock = sinon.stub(instance, 'displayMenu').callsFake(() => true);
+        const instance = instanceWithOptions({ date });
+        const displayMock = sinon.stub(instance, 'displayMenu').callsFake(() => true);
 
         instance.fetchMenu();
         assert(fetchSandbox.lastUrl().endsWith(`menuDate=${date}`));
@@ -200,36 +180,58 @@ describe('CrimsonHouseMenu', function() {
   });
 
   describe('fetchImages', function() {
-    before(async function() {
-      var floor = 9;
-      this.instance = instanceWithOptions({ floor });
-      this.mockData = await getMockData();
-      this.logStub = sinon.stub(this.instance, 'log');
-      this.printStub = sinon.stub(this.instance, 'print');
-      this.items = this.instance.filterAndSortItems(this.mockData.data);
+    describe('Terminal app is not supported', function() {
+      before(function() {
+        process.env.TERM_PROGRAM = 'not_iTerm';
+        this.instance = instanceWithOptions({ 'show-images': true });
+        this.logStub = sinon.stub(this.instance, 'log');
+        this.printStub = sinon.stub(this.instance, 'print');
+        this.instance.fetchImages({});
+      });
+
+      it('prints unsupported terminal notification items', function() {
+        sinon.assert.calledOnce(this.logStub);
+        sinon.assert.calledOnce(this.printStub);
+      });
+
+      it('reset show images option to false', function() {
+        assert.equal(this.instance.options['show-images'], false);
+      })
     });
 
-    beforeEach(function() {
-      this.instance.fetchImages(this.items);
-    });
+    describe('Terminal app is supported', function() {
+      before(async function() {
+        const floor = 9;
+        process.env.TERM_PROGRAM = 'iTerm.app';
+        this.instance = instanceWithOptions({ floor });
+        this.mockData = await getMockData();
+        this.logStub = sinon.stub(this.instance, 'log');
+        this.printStub = sinon.stub(this.instance, 'print');
+        this.items = this.instance.filterAndSortItems(this.mockData.data);
+      });
 
-    it('fetches all images using imgcat', function() {
-      assert.equal(imgcatSpy.callCount, this.items['9F'].length);
-    });
+      beforeEach(function() {
+        this.instance.fetchImages(this.items);
+      });
 
-    it('eventually calls print', function() {
-      sinon.assert.calledOnce(this.printStub);
-    });
+      it('fetches all images using imgcat', function() {
+        assert.equal(imgcatSpy.callCount, this.items['9F'].length);
+      });
 
-    it('creates progress bar', function() {
-      sinon.assert.calledThrice(progressSpy);
+      it('eventually calls print', function() {
+        sinon.assert.calledOnce(this.printStub);
+      });
+
+      it('creates progress bar', function() {
+        sinon.assert.calledThrice(progressSpy);
+      });
     });
   });
 
   describe('filterAndSortItems', function() {
     it('returns empty array when length of items is zero', function() {
-      var instance = instanceWithoutOptions();
-      var items = instance.filterAndSortItems([]);
+      const instance = instanceWithoutOptions();
+      const items = instance.filterAndSortItems([]);
       assert.equal(items.length, 0);
     });
 
@@ -239,32 +241,32 @@ describe('CrimsonHouseMenu', function() {
       });
 
       it('filters by floor', function() {
-        var floor = 9;
-        var instance = instanceWithOptions({ floor });
-        var items = instance.filterAndSortItems(this.mockData.data);
-        var keys = Object.keys(items);
+        const floor = 9;
+        const instance = instanceWithOptions({ floor });
+        const items = instance.filterAndSortItems(this.mockData.data);
+        const keys = Object.keys(items);
         assert.equal(keys.length, 1);
         assert.equal(keys[0], `${floor}F`);
         assert.equal(items[keys[0]][0].cafeteriaId, `${floor}F`);
       });
 
       it('filters by mealtime', function() {
-        var instance = instanceWithOptions({ time: 'lunch' });
-        var items = instance.filterAndSortItems(this.mockData.data);
-        var keys = Object.keys(items);
-        var allItems = Object.assign(items[keys[0]], items[keys[1]]);
-        var allItemsWithMealtime = allItems.filter((el) => el.mealTime === 1);
+        const instance = instanceWithOptions({ time: 'lunch' });
+        const items = instance.filterAndSortItems(this.mockData.data);
+        const keys = Object.keys(items);
+        const allItems = Object.assign(items[keys[0]], items[keys[1]]);
+        const allItemsWithMealtime = allItems.filter((el) => el.mealTime === 1);
         assert.equal(allItems.length, allItemsWithMealtime.length);
       });
 
       it('filters healthy only items', function() {
-        var instance = instanceWithOptions({
+        const instance = instanceWithOptions({
           floor: 22,
           'healthy-only': true,
           time: 'lunch'
         });
-        var items = instance.filterAndSortItems(this.mockData.data);
-        var keys = Object.keys(items);
+        const items = instance.filterAndSortItems(this.mockData.data);
+        const keys = Object.keys(items);
         assert.equal(items[keys[0]][0].title, 'Healthy Item');
       });
     });
@@ -275,28 +277,28 @@ describe('CrimsonHouseMenu', function() {
       });
 
       it('calls exclude once for each value passed', function() {
-        var exclude = ['a', 'b', 'c'];
-        var instance = instanceWithOptions({ exclude });
-        var excludeStub = sinon.stub(instance, 'excludeItems').returnsArg(0);
-        var items = instance.filterAndSortItems(this.mockData.data);
+        const exclude = ['a', 'b', 'c'];
+        const instance = instanceWithOptions({ exclude });
+        const excludeStub = sinon.stub(instance, 'excludeItems').returnsArg(0);
+        const items = instance.filterAndSortItems(this.mockData.data);
         sinon.assert.callCount(excludeStub, exclude.length);
       });
 
       it('sorts items by menuType', function() {
-        var floor = 9;
-        var instance = instanceWithOptions({ floor });
-        var items = instance.filterAndSortItems(this.mockData.data);
-        var menuTypes = items[`${floor}F`].map((el) => el.menuType);
-        var isSorted = !!menuTypes.reduce((memo, el) => memo && el >= memo && el);
+        const floor = 9;
+        const instance = instanceWithOptions({ floor });
+        const items = instance.filterAndSortItems(this.mockData.data);
+        const menuTypes = items[`${floor}F`].map((el) => el.menuType);
+        const isSorted = !!menuTypes.reduce((memo, el) => memo && el >= memo && el);
         assert(isSorted);
       });
 
       it('returns an object containing one object for each floor', function() {
-        var floor = 9;
-        var instanceWithOneFloor = instanceWithOptions({ floor });
-        var instanceWithTwoFloors = instanceWithoutOptions();
-        var itemsOne = instanceWithOneFloor.filterAndSortItems(this.mockData.data);
-        var itemsTwo = instanceWithTwoFloors.filterAndSortItems(this.mockData.data);
+        const floor = 9;
+        const instanceWithOneFloor = instanceWithOptions({ floor });
+        const instanceWithTwoFloors = instanceWithoutOptions();
+        const itemsOne = instanceWithOneFloor.filterAndSortItems(this.mockData.data);
+        const itemsTwo = instanceWithTwoFloors.filterAndSortItems(this.mockData.data);
         assert.equal(Object.keys(itemsOne).length, 1);
         assert.equal(Object.keys(itemsTwo).length, 2);
       });
@@ -305,7 +307,7 @@ describe('CrimsonHouseMenu', function() {
 
   describe('getDate', function() {
     describe('without date option', function() {
-      var instance = instanceWithoutOptions();
+      const instance = instanceWithoutOptions();
 
       describe('unformatted', function() {
         it('should return unformatted date string', function() {
@@ -321,8 +323,8 @@ describe('CrimsonHouseMenu', function() {
     });
 
     describe('with date option', function() {
-      var date = '19960101';
-      var instance = instanceWithOptions({ date });
+      const date = '19960101';
+      const instance = instanceWithOptions({ date });
 
       describe('unformatted', function() {
         it('should return unformatted date string from options', function() {
@@ -340,20 +342,20 @@ describe('CrimsonHouseMenu', function() {
 
   describe('get mealTime', function() {
     // TODO: import these values
-    var lunchTime = 1;
-    var dinnerTime = 2;
+    const lunchTime = 1;
+    const dinnerTime = 2;
 
     describe('with time option', function() {
       it('returns time set in options', function() {
-        var lunchInstance = instanceWithOptions({ time: 'lunch' });
-        var dinnerInstance = instanceWithOptions({ time: 'dinner' });
+        const lunchInstance = instanceWithOptions({ time: 'lunch' });
+        const dinnerInstance = instanceWithOptions({ time: 'dinner' });
         assert.equal(lunchInstance.mealTime, lunchTime);
         assert.equal(dinnerInstance.mealTime, dinnerTime);
       });
     });
 
     describe('without time option', function() {
-      var clock;
+      let clock;
 
       after(function() {
         clock.restore();
@@ -361,7 +363,7 @@ describe('CrimsonHouseMenu', function() {
 
       it('returns time based on current time', function() {
         clock = sinon.useFakeTimers(new Date(2011, 0, 1, 10, 15).getTime());
-        var instance = instanceWithoutOptions();
+        const instance = instanceWithoutOptions();
         assert.equal(instance.mealTime, lunchTime);
         clock = sinon.useFakeTimers(new Date(2011, 0, 1, 15, 15).getTime());
         assert.equal(instance.mealTime, dinnerTime);
@@ -381,8 +383,8 @@ describe('CrimsonHouseMenu', function() {
     });
 
     it('should read the help file and print its content', function() {
-      var instance = instanceWithoutOptions();
-      var logStub = sinon.stub(instance, 'log').callsFake(() => false);
+      const instance = instanceWithoutOptions();
+      const logStub = sinon.stub(instance, 'log').callsFake(() => false);
       instance.help();
       sinon.assert.calledOnce(logStub);
       sinon.assert.calledWith(logStub, this.helpText);
@@ -391,7 +393,7 @@ describe('CrimsonHouseMenu', function() {
 
   describe('isOptionSet', function() {
     it('returns wheter options is set or not', function() {
-      var instance = instanceWithOptions({
+      const instance = instanceWithOptions({
         testOption: true,
         'another-option': 'some value'
       });
@@ -417,10 +419,10 @@ describe('CrimsonHouseMenu', function() {
       });
 
       it('formated line contains the item image', function() {
-        var { data } = this.mockData;
-        var items = { [data[0].cafeteriaId]: [data[0]] };
-        var image = 'test image blob';
-        var images = {}
+        const { data } = this.mockData;
+        const items = { [data[0].cafeteriaId]: [data[0]] };
+        const image = 'test image blob';
+        const images = {}
         images[data[0].menuId] = image;
         this.instance.print(items, images);
         sinon.assert.calledTwice(this.logStub);
@@ -439,8 +441,8 @@ describe('CrimsonHouseMenu', function() {
       })
 
       it('calls log with the floor headline and item info', function() {
-        var { data } = this.mockData;
-        var items = { [data[0].cafeteriaId]: [data[0]] };
+        const { data } = this.mockData;
+        const items = { [data[0].cafeteriaId]: [data[0]] };
         this.instance.print(items);
         sinon.assert.calledTwice(this.logStub);
         sinon.assert.calledWith(this.logStub, sinon.match(data[0].cafeteriaId));
@@ -448,17 +450,17 @@ describe('CrimsonHouseMenu', function() {
       });
 
       it('adds item price', function() {
-        var { data } = this.mockData;
-        var itemWithPrice = data.find((el) => el.price > 0);
-        var items = { '9F': [itemWithPrice] };
+        const { data } = this.mockData;
+        const itemWithPrice = data.find((el) => el.price > 0);
+        const items = { '9F': [itemWithPrice] };
         this.instance.print(items);
         sinon.assert.calledWith(this.logStub, sinon.match(` (¥${itemWithPrice.price})`));
       });
 
       it('adds healthy info', function() {
-        var { data } = this.mockData;
-        var healthyItem = data.find((el) => el.ingredients.healthy);
-        var items = { '9F': [healthyItem] };
+        const { data } = this.mockData;
+        const healthyItem = data.find((el) => el.ingredients.healthy);
+        const items = { '9F': [healthyItem] };
         this.instance.print(items);
         sinon.assert.calledWith(this.logStub, sinon.match(' (healthy)'));
       });
