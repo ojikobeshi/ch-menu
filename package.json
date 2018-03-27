@@ -23,11 +23,11 @@
   },
   "dependencies": {
     "chalk": "^2.3.2",
+    "cli-progress": "^1.8.0",
     "command-line-args": "^5.0.2",
     "imgcat": "^2.3.0",
     "node-fetch": "^2.1.2",
-    "pad": "^2.0.1",
-    "progress": "^2.0.0"
+    "pad": "^2.0.1"
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
