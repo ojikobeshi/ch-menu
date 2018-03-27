@@ -6,16 +6,21 @@ const fetchMock = require('fetch-mock');
 const sinon = require('sinon');
 const fetchSandbox = fetchMock.sandbox();
 const imgcatSpy = sinon.stub().resolves(true);
+const progressSpies = {
+  increment: sinon.stub(),
+  start: sinon.stub(),
+  stop: sinon.stub()
+};
 const CrimsonHouseMenu = proxyquire('../lib/index', {
   imgcat: imgcatSpy,
   'node-fetch': fetchSandbox,
-  // 'cli-progress': {
-  //   Bar: () => true,
-  //   start: () => true,
-  //   increment: () => true,
-  //   stop: () => true,
-  //   '@noCallThru': true
-  // }
+  'cli-progress': {
+    Bar: class {
+      increment() { progressSpies.increment() }
+      start() {progressSpies.start() }
+      stop() { progressSpies.stop() }
+    }
+  }
 });
 
 function instanceWithOptions(options) {
@@ -225,7 +230,11 @@ describe('CrimsonHouseMenu', function() {
         sinon.assert.calledOnce(this.printStub);
       });
 
-      it('creates progress bar');
+      it('creates progress bar', function() {
+        sinon.assert.calledOnce(progressSpies.start);
+        assert.equal(progressSpies.increment.callCount, this.items['9F'].length);
+        sinon.assert.calledOnce(progressSpies.stop);
+      });
     });
   });
 
@@ -383,7 +392,7 @@ describe('CrimsonHouseMenu', function() {
       sinon.stub.reset();
     });
 
-    it('should read the help file and print its content', function() {
+    it('reads the help file and print its content', function() {
       const instance = instanceWithoutOptions();
       const logStub = sinon.stub(instance, 'log').callsFake(() => false);
       instance.help();
